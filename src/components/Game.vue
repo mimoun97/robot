@@ -5,40 +5,64 @@
   </div>
 </template>
 <script>
-/* eslint-disable */
-import Phaser from "phaser";
+import Phaser from 'phaser'
+import Constants from '../js/utils/Constants'
 
-import Loading from "../js/scenes/Loading";
-import Menu from "../js/scenes/Menu";
-
-//images
-import logoImg from "../assets/logo.png";
-import okImg from "../assets/ok.png";
-// audio
+import PreloadScene from '../js/scenes/PreloadScene'
+import MenuScene from '../js/scenes/MenuScene'
+import LevelAScene from '../js/scenes/LevelAScene'
+import LevelBScene from '../js/scenes/LevelBScene'
+import CreditsScene from '../js/scenes/CreditsScene'
+import ScoresScene from '../js/scenes/ScoresScene'
 
 export default {
-  name: "Game",
-  mounted() {
+  name: 'Game',
+  mounted () {
     // phaser 3.0 => phaser
     let config = {
+      title: Constants.TITLE,
       type: Phaser.AUTO,
-      width: 800,
-      height: 400,
-      backgroundColor: '#41b8a1',
-      scene: [ Loading, Menu ],// LevelA, LevelB ],
+      width: Constants.WIDTH,
+      height: Constants.HEIGHT,
+      backgroundColor: Constants.BG_COLOR,
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        parent: 'game',
+        width: window.innerWidth * window.devicePixelRatio,
+        height: window.innerHeight * window.devicePixelRatio
+      },
+      scene: [
+        PreloadScene,
+        MenuScene,
+        LevelAScene,
+        LevelBScene,
+        CreditsScene,
+        ScoresScene
+      ],
       physics: {
-        default: "arcade",
+        default: 'arcade',
         arcade: {
           gravity: { y: 200 }
         }
       },
-      title: "ROBOT"
-    };
+      loader: {
+        baseURL: 'assets'
+      }
+    }
 
     // eslint-disable-next-line
-    new Phaser.Game(config);
+    const game = new Phaser.Game(config);
+    console.log(game)
+    Constants.WIDTH = game.config.width
+    Constants.HEIGHT = game.config.height
+
+    fetch('assets/img/ui/back.png')
+      .then(function (response) {
+        console.log(response)
+      })
   }
-};
+}
 </script>
 <style>
 @font-face {

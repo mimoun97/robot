@@ -1,10 +1,9 @@
 /* eslint-disable */
-import Phaser from "phaser";
 
-export class SceneA extends Phaser.Scene {
+export class Loading extends Phaser.Scene {
 
     constructor() {
-        super('GameScene');
+        super({ key: 'UIScene' });
     }
 
     preload() {
@@ -20,8 +19,8 @@ export class SceneA extends Phaser.Scene {
             progress.destroy();
         });
 
-        this.load.image("logo", logoImg);
-        this.load.image("ok", okImg);
+        // this.load.image("logo", logoImg);
+        // this.load.image("ok", okImg);
     }
 
     create() {
