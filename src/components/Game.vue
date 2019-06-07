@@ -43,7 +43,7 @@ export default {
       physics: {
         default: 'arcade',
         arcade: {
-          gravity: { y: 200 }
+          gravity: { y: 4000 }
         }
       },
       loader: {
@@ -52,15 +52,10 @@ export default {
     }
 
     // eslint-disable-next-line
-    const game = new Phaser.Game(config);
-    console.log(game)
-    Constants.WIDTH = game.config.width
-    Constants.HEIGHT = game.config.height
+    const game = new Phaser.Game(config)
 
-    fetch('assets/img/ui/back.png')
-      .then(function (response) {
-        console.log(response)
-      })
+    // Constants.WIDTH = game.config.width
+    // Constants.HEIGHT = game.config.height
   }
 }
 </script>

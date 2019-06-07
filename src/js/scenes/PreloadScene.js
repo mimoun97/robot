@@ -26,6 +26,8 @@ class PreloadScene extends Phaser.Scene {
   }
   preload () {
     this.loadUiElements()
+
+    this.preloadTilesets()
   }
 
   isMobile () {
@@ -71,9 +73,18 @@ class PreloadScene extends Phaser.Scene {
     // }
   }
 
+  preloadTilesets () {
+    this.load.image('tiles', './img/tilesets/16x16RobotTileset.v1.png')
+    this.load.tilemapTiledJSON('map', './img/tilesets/projecte_robot.json')
+
+    // player
+    this.load.spritesheet('player', './img/tilesets/player_idle.png', { frameWidth: 16, frameHeight: 32 })
+  }
+
   create () {
     console.log('PreloadScene: created()')
-    this.scene.start('MenuScene')
+    this.scene.start('LevelAScene')
+    // this.scene.start('MenuScene')
   }
 }
 
