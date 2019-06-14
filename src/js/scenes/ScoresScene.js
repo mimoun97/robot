@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 
-import Constants from '../utils/Constants'
+// import Constants from '../utils/Constants'
 
 class ScoresScene extends Phaser.Scene {
   constructor (test) {

@@ -1,14 +1,16 @@
+import Phaser from 'phaser'
+
 class Player extends Phaser.GameObjects.Sprite {
-  constructor(config) {
-    super(config.scene, config.x, config.y, 'player');
-    config.scene.physics.world.enable(this);
-    this.scene = config.scene;
-    this.body.setDrag(8, 8);
-    this.body.setBounce(.5, .5);
+  constructor (config) {
+    super(config.scene, config.x, config.y, 'player')
+    config.scene.physics.world.enable(this)
+    this.scene = config.scene
+    this.body.setDrag(8, 8)
+    this.body.setBounce(0.5, 0.5)
     this.body.setMass(100)
-    this.alive = true;
+    this.alive = true
     //   this.damaged = false;
-    this.cursors = this.scene.input.keyboard.createCursorKeys();
+    this.cursors = this.scene.input.keyboard.createCursorKeys()
     //   this.canLoad = true;  //property controls whether the level can restart so that it can only be called once
 
     //   this.noMagicSound = this.scene.sound.add('outOfMagicSFX');
@@ -20,13 +22,13 @@ class Player extends Phaser.GameObjects.Sprite {
     //   this.deathSound = this.scene.sound.add('playerDeathSFX');
     //   this.deathSound.setVolume(.4);
 
-    //sync crosshair position with pointer
+    // sync crosshair position with pointer
     //   this.scene.input.on('pointermove', function (pointer) {
     //     let mouse = pointer
     //     this.scene.crosshair.setPosition(mouse.x + this.scene.cameras.main.scrollX, mouse.y + this.scene.cameras.main.scrollY);
     //   }, this);
 
-    //create a new instance of fireball class when pointer is clicked and add it to player attack group for collision callbacks
+    // create a new instance of fireball class when pointer is clicked and add it to player attack group for collision callbacks
     //   this.scene.input.on('pointerdown', function (pointer) {
     //     let magic = this.scene.registry.get('magic_current');
     //     if (magic > 0) {
@@ -58,10 +60,10 @@ class Player extends Phaser.GameObjects.Sprite {
       repeat: -1
     })
 
-    this.scene.add.existing(this);
+    this.scene.add.existing(this)
   }
 
-  update(time, delta) {
+  update (time, delta) {
     if (this.alive) {
       let healthCurrent = this.scene.registry.get('player_lifes')
       if (healthCurrent <= 0) {
@@ -71,29 +73,27 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.time.addEvent({ delay: 1000, callback: this.gameOver, callbackScope: this })
       }
 
-      this.scene.physics.overlap(this, this.scene.pickups, this.pickup) //call pickup method when player overlaps pickup objects
+      this.scene.physics.overlap(this, this.scene.pickups, this.pickup) // call pickup method when player overlaps pickup objects
 
-      //movement
+      // movement
       if (!this.damaged) {
-        this.body.setVelocity(0);
+        this.body.setVelocity(0)
       }
 
       this.playerMovement()
     }
   }
 
-  playerMovement() {
+  playerMovement () {
     if (this.cursors.left.isDown) {
       this.body.setVelocityX(-160)
       this.setFlipX(true)
       this.anims.play('player_walk', true)
-    }
-    else if (this.cursors.right.isDown) {
-      this.body.setVelocityX(160);
+    } else if (this.cursors.right.isDown) {
+      this.body.setVelocityX(160)
       this.setFlipX(false)
       this.anims.play('player_walk', true)
-    }
-    else {
+    } else {
       this.body.setVelocityX(0)
       this.anims.play('player_idle')
     }
@@ -105,8 +105,8 @@ class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
-  pickup(player, object) {
-    object.pickup();  //call the pickup objects method
+  pickup (player, object) {
+    object.pickup() // call the pickup objects method
   }
 }
 

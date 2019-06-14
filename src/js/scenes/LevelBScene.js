@@ -21,7 +21,6 @@ class LevelBScene extends Phaser.Scene {
     this.alignElements()
 
     this.createLevel()
-
   }
 
   alignElements () {

@@ -81,7 +81,6 @@ class PreloadScene extends Phaser.Scene {
     this.load.spritesheet('player', './img/tilesets/player.png', { frameWidth: 16, frameHeight: 32 })
     // enemy
     this.load.spritesheet('enemy', './img/tilesets/enemy.png', { frameWidth: 16, frameHeight: 32 })
-
   }
 
   create () {

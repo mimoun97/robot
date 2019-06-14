@@ -3,13 +3,13 @@ import Constants from '../utils/Constants'
 import Player from '../objects/Player'
 
 class LevelAScene extends Phaser.Scene {
-  constructor() {
+  constructor () {
     super({
       key: 'LevelAScene'
     })
   }
 
-  create() {
+  create () {
     this.cameras.main.backgroundColor.setTo(0, 0, 0)
 
     this.titleText = this.add.text(0, 0, 'Level A', {
@@ -28,11 +28,11 @@ class LevelAScene extends Phaser.Scene {
     this.addCollides()
   }
 
-  update(time, delta) {
+  update (time, delta) {
     this.player.update(time, delta)
   }
 
-  addCollides() {
+  addCollides () {
     this.physics.add.collider(this.enemy, this.player)
 
     this.physics.add.collider(this.enemy, this.WorldLayer)
@@ -40,40 +40,38 @@ class LevelAScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.WorldLayer)
   }
 
-  createEnemy() {
-
+  createEnemy () {
     const enemyPoint = this.map.findObject('Objects', obj => obj.name === 'Enemy Point')
 
     this.enemy = this.physics.add.sprite(enemyPoint.x, enemyPoint.y, 'enemy')
   }
 
-  createPlayer() {
-
+  createPlayer () {
     const spawnPoint = this.map.findObject('Objects', obj => obj.name === 'Spawn Point')
 
-    //create a new instance of the player class at the currently loaded spawnpoint
+    // create a new instance of the player class at the currently loaded spawnpoint
     this.player = new Player({
       scene: this,
-      x: spawnPoint.x, 
-      y: spawnPoint.y,
+      x: spawnPoint.x,
+      y: spawnPoint.y
     })
 
     this.camera.startFollow(this.player)
   }
 
-  alignElements() {
+  alignElements () {
     Phaser.Display.Align.In.Center(
       this.titleText,
       this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2 - this.titleText.displayHeight / 2, Constants.WIDTH, Constants.HEIGHT)
     )
   }
 
-  startGame() {
+  startGame () {
     this.scene.stop().start('LevelBScene')
     // this.scene.start('LevelBScene')
   }
 
-  createLevel() {
+  createLevel () {
     console.log('sadsadsa')
     // Load a map from a 2D array of tile indices
     // When loading a CSV map, make sure to specify the tileWidth and tileHeight!
