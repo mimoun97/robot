@@ -6,8 +6,8 @@ class Player extends Phaser.GameObjects.Sprite {
     config.scene.physics.world.enable(this)
     this.scene = config.scene
     this.body.setDrag(8, 8)
+    this.body.setBounce(0.1)
     this.body.setBounce(0.5, 0.5)
-    this.body.setMass(100)
     this.alive = true
     //   this.damaged = false;
     this.cursors = this.scene.input.keyboard.createCursorKeys()
@@ -61,6 +61,8 @@ class Player extends Phaser.GameObjects.Sprite {
     })
 
     this.scene.add.existing(this)
+
+    console.log(this)
   }
 
   update (time, delta) {
@@ -73,7 +75,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.time.addEvent({ delay: 1000, callback: this.gameOver, callbackScope: this })
       }
 
-      this.scene.physics.overlap(this, this.scene.pickups, this.pickup) // call pickup method when player overlaps pickup objects
+      this.scene.physics.overlap(this, this.scene.coins, this.pickup) // call pickup method when player overlaps pickup objects
 
       // movement
       if (!this.damaged) {
@@ -85,6 +87,7 @@ class Player extends Phaser.GameObjects.Sprite {
   }
 
   playerMovement () {
+    this.anims.play('player_idle', true)
     if (this.cursors.left.isDown) {
       this.body.setVelocityX(-160)
       this.setFlipX(true)
@@ -98,15 +101,19 @@ class Player extends Phaser.GameObjects.Sprite {
       this.anims.play('player_idle')
     }
 
-    if (this.cursors.up.isDown && true) {
-      this.body.setVelocityY(-120)
+    if (this.cursors.up.isDown && this.body.onFloor()) {
+      this.body.setVelocityY(-1000)
       this.anims.play('player_idle')
       // this.jumpSound.play()
     }
   }
 
   pickup (player, object) {
-    object.pickup() // call the pickup objects method
+    let coins = this.registry.get('coins_current')
+    this.registry.set('coins_current', coins + 1)
+    this.events.emit('coinChange')
+    console.log('PICK UP COIN: ', +player)
+    // object.pickup() // call the pickup objects method
   }
 }
 

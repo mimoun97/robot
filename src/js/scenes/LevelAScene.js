@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import Constants from '../utils/Constants'
 import Player from '../objects/Player'
 
 class LevelAScene extends Phaser.Scene {
@@ -12,18 +11,13 @@ class LevelAScene extends Phaser.Scene {
   create () {
     this.cameras.main.backgroundColor.setTo(0, 0, 0)
 
-    this.titleText = this.add.text(0, 0, 'Level A', {
-      font: '97px arcade',
-      fill: '#fff'
-    })
-
-    this.alignElements()
-
     this.createLevel()
 
     this.createPlayer()
 
     this.createEnemy()
+
+    this.createCoins()
 
     this.addCollides()
   }
@@ -38,12 +32,50 @@ class LevelAScene extends Phaser.Scene {
     this.physics.add.collider(this.enemy, this.WorldLayer)
 
     this.physics.add.collider(this.player, this.WorldLayer)
+
+    this.physics.add.collider(this.coins, this.WorldLayer)
   }
 
   createEnemy () {
     const enemyPoint = this.map.findObject('Objects', obj => obj.name === 'Enemy Point')
 
     this.enemy = this.physics.add.sprite(enemyPoint.x, enemyPoint.y, 'enemy')
+  }
+
+  createCoins () {
+    this.coins = this.physics.add.group()
+    console.log(this.coins)
+    this.coins.defaults.setAllowGravity = false
+
+    const objectsLayer = this.map.getObjectLayer('Objects')
+
+    this.anims.create({
+      key: 'coin',
+      frames: this.anims.generateFrameNames('coin', { frames: [0, 6] }),
+      frameRate: 4,
+      repeat: -1
+    })
+
+    objectsLayer.objects.forEach(
+      (object) => {
+        if (object.type === 'coin') {
+          // let coins = new Coins({
+          //   scene: this,
+          //   x: object.x + 8,
+          //   y: object.y - 8,
+          //   number: coinNum
+          // })
+          let coin = this.physics.add.sprite(object.x, object.y, 'coin')
+          coin.play('coin')
+
+          this.coins.add(coin)
+        }
+      })
+
+    // this.coin = this.add.sprite(enemyPoint.x + 200, enemyPoint.y, 'coin').play('coin')
+
+    // this.coin.anims.play('coin', true)
+    // this.anims.play('coin', true)
   }
 
   createPlayer () {
@@ -54,16 +86,9 @@ class LevelAScene extends Phaser.Scene {
       scene: this,
       x: spawnPoint.x,
       y: spawnPoint.y
-    })
+    }).play('player_idle')
 
     this.camera.startFollow(this.player)
-  }
-
-  alignElements () {
-    Phaser.Display.Align.In.Center(
-      this.titleText,
-      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2 - this.titleText.displayHeight / 2, Constants.WIDTH, Constants.HEIGHT)
-    )
   }
 
   startGame () {
@@ -92,20 +117,15 @@ class LevelAScene extends Phaser.Scene {
 
     // Phaser supports multiple cameras, but you can access the default camera like this:
     this.camera = this.cameras.main
-    // this.camera.zoom = 1.61803
+    this.camera.zoom = 1.61803
 
     // Constrain the camera so that it isn't allowed to move outside the width/height of tilemap
     this.camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
+  }
 
-    // Help text that has a "fixed" position on the screen
-    this.add
-      .text(16, 16, 'Arrow keys to scroll', {
-        font: '18px monospace',
-        fill: '#ffffff',
-        padding: { x: 20, y: 10 },
-        backgroundColor: '#000000'
-      })
-      .setScrollFactor(0)
+  addCoins () {
+    // group coins getLength()
+
   }
 }
 

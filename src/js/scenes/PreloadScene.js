@@ -25,6 +25,10 @@ class PreloadScene extends Phaser.Scene {
     Constants.IS_MOBILE = this.isMobile()
   }
   preload () {
+    // debugger
+
+    this.addProgressPlus()
+
     this.loadUiElements()
 
     this.preloadTilesets()
@@ -35,28 +39,26 @@ class PreloadScene extends Phaser.Scene {
     this.sys.game.device.os.windowsPhone
   }
 
-  addProgress () {
-    const rect = this.add.graphics()
-    rect.fillRect(0, Constants.HEIGHT / 2, Constants.WIDTH, 60)
-    rect.fillStyle(0x55ffff, 1)
+  addProgressPlus () {
+    // create a background and prepare loading bar
+    this.cameras.main.setBackgroundColor(0x021f28)
+    this.fullBar = this.add.graphics()
+    this.fullBar.fillStyle(0xbfc0c1, 1) // bfc0c1 0x3494d9
+    this.fullBar.fillRect((this.cameras.main.width / 4) - 2, (this.cameras.main.height / 2) - 18, (this.cameras.main.width / 2) + 4, 20)
+    this.progress = this.add.graphics()
 
-    const progress = this.add.graphics()
-    // Register a load progress event to show a load bar
-    this.load.on('progress', (value) => {
-      progress.clear()
-      progress.fillStyle(0xffffff, 0.5)
-      progress.fillRect(0, Constants.HEIGHT / 2, Constants.WIDTH * value, 60)
-    })
+    // pass loading progress as value to loading bar and redraw as files load
+    this.load.on('progress', function (value) {
+      this.progress.clear()
+      this.progress.fillStyle(0xfff6d3, 1)
+      this.progress.fillRect((this.cameras.main.width / 4), (this.cameras.main.height / 2) - 16, (this.cameras.main.width / 2) * value, 16)
+    }, this)
 
-    // Register a load complete event to launch the title screen when all files are loaded
-    this.load.on('complete', () => {
-      progress.destroy()
-    })
-
-    this.authorText = this.add.text(Constants.WIDTH / 2, Constants.HEIGHT / 2, 'LOADING...', {
-      font: '28px minecraft',
-      fill: '#3498DB'
-    })
+    // cleanup our graphics on complete
+    this.load.on('complete', function () {
+      this.progress.destroy()
+      this.fullBar.destroy()
+    }, this)
   }
 
   loadUiElements () {
@@ -81,12 +83,24 @@ class PreloadScene extends Phaser.Scene {
     this.load.spritesheet('player', './img/tilesets/player.png', { frameWidth: 16, frameHeight: 32 })
     // enemy
     this.load.spritesheet('enemy', './img/tilesets/enemy.png', { frameWidth: 16, frameHeight: 32 })
+    // coins
+    this.load.spritesheet('coin', './img/coins.png', { frameWidth: 16, frameHeight: 16 })
   }
 
   create () {
-    console.log('PreloadScene: created()')
-    // this.scene.start('LevelAScene')
+    this.initRegistry()
+
     this.scene.start('MenuScene')
+  }
+
+  initRegistry () {
+    // registry es accessible per totes les scenes, get i set
+    this.registry.set('lives_max', 3)
+    this.registry.set('lives_current', 3)
+    this.registry.set('coins_max', NaN) // se contaran les monedes al iniciar el nivell
+    this.registry.set('coins_current', 0)
+    this.registry.set('score', 0)
+    this.registry.set('high_score', localStorage.getItem('high_score') || 0)
   }
 }
 

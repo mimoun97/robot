@@ -12,7 +12,7 @@ class MenuScene extends Phaser.Scene {
     console.debug('MenuScene: init()')
     console.log(Constants.TITLE)
 
-    this.cameras.main.backgroundColor.setTo(96, 125, 139) // (0,188,212)
+    this.cameras.main.backgroundColor.setTo(2, 31, 40) // (0,188,212)
 
     this.titleText = this.add.text(0, 0, Constants.TITLE, {
       font: '256px arcade',
@@ -21,7 +21,7 @@ class MenuScene extends Phaser.Scene {
 
     this.authorText = this.add.text(0, 0, Constants.AUTHOR, {
       font: '97.7px arcade',
-      fill: '#fff'
+      fill: '#bfc0c1'
     })
 
     this.startButton = this.add.sprite(0, 0, 'start').setInteractive()
@@ -41,6 +41,11 @@ class MenuScene extends Phaser.Scene {
     this.fullscreenButton.on('pointerover', () => { this.fullscreenButton.alpha = 0.7 })
     this.fullscreenButton.on('pointerout', () => { this.fullscreenButton.alpha = 1 })
     this.fullscreenButton.on('pointerdown', () => { this.fullscreen() })
+
+    this.buttons = this.add.group()
+    this.buttons.add(this.scoresButton)
+    this.buttons.add(this.startButton)
+    this.buttons.add(this.fullscreenButton)
 
     this.alignElements()
   }
@@ -87,7 +92,8 @@ class MenuScene extends Phaser.Scene {
   }
 
   startGame () {
-    this.scene.start('LevelAScene')
+    this.scene.launch('UIScene')
+    this.scene.stop().start('LevelAScene')
   }
 
   startScores () {

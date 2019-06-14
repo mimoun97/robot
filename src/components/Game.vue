@@ -14,6 +14,7 @@ import LevelAScene from '../js/scenes/LevelAScene'
 import LevelBScene from '../js/scenes/LevelBScene'
 import CreditsScene from '../js/scenes/CreditsScene'
 import ScoresScene from '../js/scenes/ScoresScene'
+import UIScene from '../js/scenes/UIScene'
 
 export default {
   name: 'Game',
@@ -25,6 +26,7 @@ export default {
       width: Constants.WIDTH,
       height: Constants.HEIGHT,
       backgroundColor: Constants.BG_COLOR,
+      pixelArt: true,
       scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -38,12 +40,14 @@ export default {
         LevelAScene,
         LevelBScene,
         CreditsScene,
-        ScoresScene
+        ScoresScene,
+        UIScene
       ],
       physics: {
         default: 'arcade',
         arcade: {
-          gravity: { y: 4000 }
+          gravity: { y: 1000 },
+          debug: true
         }
       },
       loader: {
