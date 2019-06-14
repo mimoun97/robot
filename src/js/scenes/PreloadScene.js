@@ -1,4 +1,4 @@
-/* global Phaser:true */
+import Phaser from 'phaser'
 
 import Constants from '../utils/Constants'
 
@@ -78,13 +78,16 @@ class PreloadScene extends Phaser.Scene {
     this.load.tilemapTiledJSON('map', './img/tilesets/projecte_robot.json')
 
     // player
-    this.load.spritesheet('player', './img/tilesets/player_idle.png', { frameWidth: 16, frameHeight: 32 })
+    this.load.spritesheet('player', './img/tilesets/player.png', { frameWidth: 16, frameHeight: 32 })
+    // enemy
+    this.load.spritesheet('enemy', './img/tilesets/enemy.png', { frameWidth: 16, frameHeight: 32 })
+
   }
 
   create () {
     console.log('PreloadScene: created()')
-    this.scene.start('LevelAScene')
-    // this.scene.start('MenuScene')
+    // this.scene.start('LevelAScene')
+    this.scene.start('MenuScene')
   }
 }
 

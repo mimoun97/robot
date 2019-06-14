@@ -53,9 +53,6 @@ export default {
 
     // eslint-disable-next-line
     const game = new Phaser.Game(config)
-
-    // Constants.WIDTH = game.config.width
-    // Constants.HEIGHT = game.config.height
   }
 }
 </script>

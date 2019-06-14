@@ -1,4 +1,4 @@
-/* global Phaser:true */
+import Phaser from 'phaser'
 
 import Constants from '../utils/Constants'
 
@@ -13,25 +13,23 @@ class ScoresScene extends Phaser.Scene {
 
     // this.cameras.main.backgroundColor.setTo(50,188,30)
 
-    this.titleText = this.add.text(0, 0, 'Scores', {
-      font: '97px arcade',
+    this.titleText = this.add.text(0, 0, 'HIGH SCORE', {
+      font: '155px arcade',
       fill: '#fff'
     })
 
-    this.primer = this.add.text(0, 0, 'John Smith: ' + 231, {
-      font: '63px arcade',
+    let SCORE = 500
+    this.primer = this.add.text(0, 0, SCORE, {
+      font: '96px arcade',
       fill: 'yellow'
     })
 
-    this.segon = this.add.text(0, 0, 'Angelina Jolie: ' + 180, {
-      font: '56px arcade',
-      fill: '#fff'
-    })
-
-    this.tercer = this.add.text(0, 0, 'asdasdas: ' + 110, {
-      font: '56px arcade',
-      fill: '#fff'
-    })
+    this.backButton = this.add.image(0, 0, 'back').setInteractive()
+    this.backButton.flipX = true
+    this.backButton.setScale(1.61803, 1.61803)
+    this.backButton.on('pointerover', () => { this.backButton.alpha = 0.7 })
+    this.backButton.on('pointerout', () => { this.backButton.alpha = 1 })
+    this.backButton.on('pointerdown', () => { this.scene.start('MenuScene') })
 
     this.alignElements()
   }
@@ -39,22 +37,17 @@ class ScoresScene extends Phaser.Scene {
   alignElements () {
     Phaser.Display.Align.In.Center(
       this.titleText,
-      this.add.zone(Constants.WIDTH / 2, Constants.HEIGHT / 2 - this.titleText.displayHeight * 2, Constants.WIDTH, Constants.HEIGHT)
+      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2 - this.titleText.displayHeight, this.sys.game.config.width, this.sys.game.config.height)
     )
 
     Phaser.Display.Align.In.Center(
       this.primer,
-      this.add.zone(Constants.WIDTH / 2, Constants.HEIGHT / 2 + this.segon.displayHeight, Constants.WIDTH, Constants.HEIGHT)
+      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2, this.sys.game.config.width, this.sys.game.config.height)
     )
 
     Phaser.Display.Align.In.Center(
-      this.segon,
-      this.add.zone(Constants.WIDTH / 2, Constants.HEIGHT / 2 + this.segon.displayHeight * 3, Constants.WIDTH, Constants.HEIGHT)
-    )
-
-    Phaser.Display.Align.In.Center(
-      this.tercer,
-      this.add.zone(Constants.WIDTH / 2, Constants.HEIGHT / 2 + this.segon.displayHeight * 4, Constants.WIDTH, Constants.HEIGHT)
+      this.backButton,
+      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2 + this.primer.displayHeight + 160, this.sys.game.config.width, this.sys.game.config.height)
     )
   }
 

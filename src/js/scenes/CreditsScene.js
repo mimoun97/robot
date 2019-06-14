@@ -1,4 +1,4 @@
-/* global Phaser:true */
+import Phaser from 'phaser'
 
 import Constants from '../utils/Constants'
 

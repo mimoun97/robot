@@ -1,83 +1,112 @@
-/* global Phaser:true */
+class Player extends Phaser.GameObjects.Sprite {
+  constructor(config) {
+    super(config.scene, config.x, config.y, 'player');
+    config.scene.physics.world.enable(this);
+    this.scene = config.scene;
+    this.body.setDrag(8, 8);
+    this.body.setBounce(.5, .5);
+    this.body.setMass(100)
+    this.alive = true;
+    //   this.damaged = false;
+    this.cursors = this.scene.input.keyboard.createCursorKeys();
+    //   this.canLoad = true;  //property controls whether the level can restart so that it can only be called once
 
-import Phaser from 'phaser'
+    //   this.noMagicSound = this.scene.sound.add('outOfMagicSFX');
+    //   this.noMagicSound.setVolume(.4);
 
-/**
- * A class that wraps up our 2D platforming player logic. It creates, animates and moves a sprite in
- * response to WASD/arrow keys. Call its update method from the scene's update and call its destroy
- * method when you're done with the player.
- */
-class Player {
-  constructor (scene, x, y) {
-    this.scene = scene
+    //   this.hurtSound = this.scene.sound.add('playerDamageSFX');
+    //   this.hurtSound.setVolume(.4);
+
+    //   this.deathSound = this.scene.sound.add('playerDeathSFX');
+    //   this.deathSound.setVolume(.4);
+
+    //sync crosshair position with pointer
+    //   this.scene.input.on('pointermove', function (pointer) {
+    //     let mouse = pointer
+    //     this.scene.crosshair.setPosition(mouse.x + this.scene.cameras.main.scrollX, mouse.y + this.scene.cameras.main.scrollY);
+    //   }, this);
+
+    //create a new instance of fireball class when pointer is clicked and add it to player attack group for collision callbacks
+    //   this.scene.input.on('pointerdown', function (pointer) {
+    //     let magic = this.scene.registry.get('magic_current');
+    //     if (magic > 0) {
+    //       let fireball = this.scene.playerAttack.get();
+    //       if (fireball)
+    //       {
+    //           fireball.fire(this.x, this.y);
+
+    //       }
+    //       this.scene.registry.set('magic_current', magic - 1);
+    //       this.scene.events.emit('magicChange'); //tell the scene the magic has changed so the HUD is updated
+    //     } else {
+    //       this.noMagicSound.play();
+    //     }
+    //   }, this);
 
     // Create the animations we need from the player spritesheet
-    // const anims = scene.anims
-    // anims.create({
-    //   key: 'player-idle',
-    //   frames: anims.generateFrameNumbers('player', { start: 0, end: 3 }),
-    //   frameRate: 3,
-    //   repeat: -1
-    // })
-    // anims.create({
-    //   key: 'player-run',
-    //   frames: anims.generateFrameNumbers('player', { start: 8, end: 15 }),
-    //   frameRate: 12,
-    //   repeat: -1
-    // })
-
-    // Create the physics-based sprite that we will move around and animate
-    this.sprite = scene.physics.add
-      .sprite(x, y, 'player')
-
-    // Track the arrow keys & WASD
-    const { LEFT, RIGHT, UP, W, A, D } = Phaser.Input.Keyboard.KeyCodes
-    this.keys = scene.input.keyboard.addKeys({
-      left: LEFT,
-      right: RIGHT,
-      up: UP,
-      w: W,
-      a: A,
-      d: D
+    this.scene.anims.create({
+      key: 'player_walk',
+      frames: this.scene.anims.generateFrameNames('player', { frames: [0, 7] }),
+      frameRate: 8,
+      repeat: -1
     })
+
+    this.scene.anims.create({
+      key: 'player_idle',
+      frames: this.scene.anims.generateFrameNames('player', { frames: [8, 15] }),
+      frameRate: 8,
+      repeat: -1
+    })
+
+    this.scene.add.existing(this);
   }
 
-  update () {
-    const keys = this.keys
-    const sprite = this.sprite
-    const onGround = sprite.body.blocked.down
-    const acceleration = onGround ? 600 : 200
+  update(time, delta) {
+    if (this.alive) {
+      let healthCurrent = this.scene.registry.get('player_lifes')
+      if (healthCurrent <= 0) {
+        this.alive = false
+        this.setTint(0x2a0503)
+        this.deathSound.play()
+        this.scene.time.addEvent({ delay: 1000, callback: this.gameOver, callbackScope: this })
+      }
 
-    // Apply horizontal acceleration when left/a or right/d are applied
-    if (keys.left.isDown || keys.a.isDown) {
-      sprite.setAccelerationX(-acceleration)
-      // No need to have a separate set of graphics for running to the left & to the right. Instead
-      // we can just mirror the sprite.
-      sprite.setFlipX(true)
-    } else if (keys.right.isDown || keys.d.isDown) {
-      sprite.setAccelerationX(acceleration)
-      sprite.setFlipX(false)
-    } else {
-      sprite.setAccelerationX(0)
-    }
+      this.scene.physics.overlap(this, this.scene.pickups, this.pickup) //call pickup method when player overlaps pickup objects
 
-    // Only allow the player to jump if they are on the ground
-    if (onGround && (keys.up.isDown || keys.w.isDown)) {
-      sprite.setVelocityY(-500)
-    }
+      //movement
+      if (!this.damaged) {
+        this.body.setVelocity(0);
+      }
 
-    // Update the animation/texture based on the state of the player
-    if (onGround) {
-      if (sprite.body.velocity.x !== 0) sprite.anims.play('player-run', true)
-      // else sprite.anims.play("player-idle", true);
-    } else {
-      // sprite.anims.stop();
-      // sprite.setTexture("player", 10);
+      this.playerMovement()
     }
   }
 
-  destroy () {
-    this.sprite.destroy()
+  playerMovement() {
+    if (this.cursors.left.isDown) {
+      this.body.setVelocityX(-160)
+      this.setFlipX(true)
+      this.anims.play('player_walk', true)
+    }
+    else if (this.cursors.right.isDown) {
+      this.body.setVelocityX(160);
+      this.setFlipX(false)
+      this.anims.play('player_walk', true)
+    }
+    else {
+      this.body.setVelocityX(0)
+      this.anims.play('player_idle')
+    }
+
+    if (this.cursors.up.isDown && true) {
+      this.body.setVelocityY(-120)
+      this.anims.play('player_idle')
+      // this.jumpSound.play()
+    }
+  }
+
+  pickup(player, object) {
+    object.pickup();  //call the pickup objects method
   }
 }
 
