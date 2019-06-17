@@ -21,10 +21,11 @@ class UIScene extends Phaser.Scene {
     })
 
     const level = this.scene.get('LevelAScene')
-    level.events.on('coinChange', this.updateCoins, this) // watch the level to see if the coin count has changed. Event emitted by coin class.
-    level.events.on('livesChange', this.updateLives, this) // watch the level to see if the coin health has changed. Event emitted by player and meat class.
+    level.events.on('coinChange', this.updateCoins, this)
+    level.events.on('livesChange', this.updateLives, this)
 
-    level.events.on('gameOver', this.gameOver, this) // watch for Game Over
+    level.events.on('gameOver', this.gameOver, this)
+    level.events.on('gameComplete', () => { this.levelComplete() }, this)
   }
 
   updateCoins () {
@@ -35,10 +36,16 @@ class UIScene extends Phaser.Scene {
     this.lives.setText(`Lives: ${this.registry.get('lives_current')} / ${this.registry.get('lives_max')}`)
   }
 
-  gameOver () {
-    this.health.destroy()
-    this.magic.destroy()
+  levelComplete () {
+    this.lives.destroy()
     this.coins.destroy()
+    this.scene.stop()
+  }
+
+  gameOver () {
+    this.lives.destroy()
+    this.coins.destroy()
+    this.scene.stop()
   }
 }
 

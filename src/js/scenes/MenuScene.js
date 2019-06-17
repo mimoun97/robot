@@ -14,6 +14,8 @@ class MenuScene extends Phaser.Scene {
 
     this.cameras.main.backgroundColor.setTo(2, 31, 40) // (0,188,212)
 
+    this.bg = this.add.image(0, 0, 'bg')
+
     this.titleText = this.add.text(0, 0, Constants.TITLE, {
       font: '256px arcade',
       fill: '#fff'
@@ -42,39 +44,43 @@ class MenuScene extends Phaser.Scene {
     this.fullscreenButton.on('pointerout', () => { this.fullscreenButton.alpha = 1 })
     this.fullscreenButton.on('pointerdown', () => { this.fullscreen() })
 
-    this.buttons = this.add.group()
-    this.buttons.add(this.scoresButton)
-    this.buttons.add(this.startButton)
-    this.buttons.add(this.fullscreenButton)
-
     this.alignElements()
   }
 
   alignElements () {
+    let HEIGHT = this.sys.game.config.height
+    let WIDTH = this.sys.game.config.width
+
     Phaser.Display.Align.In.Center(
       this.titleText,
-      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2 - this.titleText.displayHeight / 2, this.sys.game.config.width, this.sys.game.config.height)
+      this.add.zone(WIDTH / 2 + WIDTH / 30, HEIGHT / 2 - this.titleText.displayHeight / 2, WIDTH, HEIGHT)
     )
+
+    Phaser.Display.Align.In.Center(
+      this.bg,
+      this.add.zone(WIDTH / 2, HEIGHT / 2 - this.titleText.displayHeight / 2, WIDTH, HEIGHT)
+    )
+
     Phaser.Display.Align.In.Center(
       this.authorText,
-      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2 + this.titleText.displayHeight, this.sys.game.config.width, this.sys.game.config.height)
+      this.add.zone(WIDTH / 2, HEIGHT - this.authorText.displayHeight, WIDTH, HEIGHT)
     )
 
     // this.sys.game.config.width / 2, this.sys.game.config.height / 2
 
     Phaser.Display.Align.In.Center(
       this.startButton,
-      this.add.zone(this.sys.game.config.width / 2 + this.startButton.displayWidth, this.sys.game.config.height / 2, this.sys.game.config.width, this.sys.game.config.height)
+      this.add.zone(WIDTH / 2 + this.startButton.displayWidth, HEIGHT / 2, WIDTH, HEIGHT)
     )
 
     Phaser.Display.Align.In.Center(
       this.fullscreenButton,
-      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2, this.sys.game.config.width, this.sys.game.config.height)
+      this.add.zone(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT)
     )
 
     Phaser.Display.Align.In.Center(
       this.scoresButton,
-      this.add.zone(this.sys.game.config.width / 2 - this.startButton.displayWidth, this.sys.game.config.height / 2, this.sys.game.config.width, this.sys.game.config.height)
+      this.add.zone(WIDTH / 2 - this.startButton.displayWidth, HEIGHT / 2, WIDTH, HEIGHT)
     )
   }
 

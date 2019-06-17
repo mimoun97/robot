@@ -31,7 +31,7 @@ class PreloadScene extends Phaser.Scene {
 
     this.loadUiElements()
 
-    this.preloadTilesets()
+    this.preloadImages()
   }
 
   isMobile () {
@@ -75,7 +75,11 @@ class PreloadScene extends Phaser.Scene {
     // }
   }
 
-  preloadTilesets () {
+  preloadImages () {
+    // background image
+    this.load.image('bg', 'img/bg.jpg')
+    this.load.image('logo', 'img/logo.png')
+    // tilesets
     this.load.image('tiles', './img/tilesets/16x16RobotTileset.v1.png')
     this.load.tilemapTiledJSON('map', './img/tilesets/projecte_robot.json')
 

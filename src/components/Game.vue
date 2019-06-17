@@ -15,6 +15,7 @@ import LevelBScene from '../js/scenes/LevelBScene'
 import CreditsScene from '../js/scenes/CreditsScene'
 import ScoresScene from '../js/scenes/ScoresScene'
 import UIScene from '../js/scenes/UIScene'
+import CompleteScene from '../js/scenes/CompleteScene'
 
 export default {
   name: 'Game',
@@ -41,13 +42,14 @@ export default {
         LevelBScene,
         CreditsScene,
         ScoresScene,
-        UIScene
+        UIScene,
+        CompleteScene // game complete scene
       ],
       physics: {
         default: 'arcade',
         arcade: {
-          gravity: { y: 1000 },
-          debug: true
+          gravity: { y: 4000 },
+          debug: false
         }
       },
       loader: {
