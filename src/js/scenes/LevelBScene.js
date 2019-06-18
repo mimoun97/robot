@@ -11,9 +11,13 @@ class LevelBScene extends Phaser.Scene {
   create () {
     console.debug('LevelBScene: init()')
 
+    this.registry.set('level', 'LEVEL B')
+    this.events.emit('levelChange')
+    console.log()
+
     this.cameras.main.backgroundColor.setTo(0, 0, 0)
 
-    this.titleText = this.add.text(0, 0, 'TODO    Level B', {
+    this.titleText = this.add.text(0, 0, `TODO ${this.registry.get('level')}`, {
       font: '97px arcade',
       fill: '#fff'
     })
@@ -21,6 +25,16 @@ class LevelBScene extends Phaser.Scene {
     this.alignElements()
 
     this.createLevel()
+
+    this.time.addEvent({
+      delay: 500,
+      callback: () => {
+        this.cameras.main.fade(500, 16.5, 2.0, 1.2)
+        this.scene.stop().start('CompleteScene')
+        this.events.emit('gameComplete')
+      },
+      callbackScope: this
+    })
   }
 
   alignElements () {

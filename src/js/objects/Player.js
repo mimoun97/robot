@@ -8,8 +8,10 @@ class Player extends Phaser.GameObjects.Sprite {
     this.scene = config.scene
     this.body.setDrag(8, 8)
     this.body.setBounce(0.5, 0.5)
-    this.body.gravity.y = 600
+    this.body.gravity.y = 500
     this.alive = true
+    this.speed = 150
+    this.jumpSpeed = 800
     this.cursors = this.scene.input.keyboard.createCursorKeys()
 
     // TODO sounds
@@ -37,7 +39,7 @@ class Player extends Phaser.GameObjects.Sprite {
       repeat: -1
     })
 
-    // add player to scene  
+    // add player to scene
     this.scene.add.existing(this)
 
     this.anims.play('player_idle', true)
@@ -55,11 +57,6 @@ class Player extends Phaser.GameObjects.Sprite {
 
       this.scene.physics.overlap(this, this.scene.coins, this.pickup)
 
-      // movement
-      if (!this.damaged) {
-        this.body.setVelocity(0)
-      }
-
       this.playerMovement()
     }
   }
@@ -67,30 +64,41 @@ class Player extends Phaser.GameObjects.Sprite {
   playerMovement () {
     let numberJumps = 0
     if (this.cursors.left.isDown) {
-      this.body.setVelocityX(-100)
+      this.body.setVelocityX(-this.speed)
       this.setFlipX(true)
       this.anims.play('player_walk', true)
     } else if (this.cursors.right.isDown) {
-      this.body.setVelocityX(100)
+      this.body.setVelocityX(this.speed)
       this.setFlipX(false)
       this.anims.play('player_walk', true)
     } else {
       this.body.setVelocityX(0)
       this.anims.play('player_idle', true)
-      numberJumps=0
+      numberJumps = 0
     }
 
-    if (this.body.velocity == 0) {this.anims.play('player_idle')}
+    if (this.body.velocity === 0) { this.anims.play('player_idle') }
 
     if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.body.onFloor() && numberJumps < 1) {
-      this.body.setVelocityY(-2000)
+      this.body.setVelocityY(-this.jumpSpeed)
       // this.jumpSound.play()
       numberJumps++
     }
   }
 
-  pickup (player, object) {
-    object.pickup() // method coin.pickup()
+  hit (player, enemy) {
+    enemy.die()
+    this.setTint(0x8e2f15)
+    this.scene.time.addEvent({ delay: 1000, callback: this.normalize, callbackScope: this })
+  }
+
+  pickup (player, coin) {
+    coin.pickup()
+  }
+  normalize () {
+    if (this.alive) {
+      this.setTint(0xffffff)
+    }
   }
 }
 

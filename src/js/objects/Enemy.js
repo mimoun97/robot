@@ -1,18 +1,15 @@
-
+import Phaser from 'phaser'
 
 class Enemy extends Phaser.GameObjects.Sprite {
-  constructor(config) 
-  {
+  constructor (config) {
     super(config.scene, config.x, config.y, 'enemy')
     config.scene.physics.world.enable(this)
-    this.scene = config.scene;
+    this.scene = config.scene
     this.body.setDrag(8, 8)
-    this.body.setBounce(.5, .5)
+    this.body.setBounce(0.5, 0.5)
     this.alive = true
-    this.moveX = 'none'
-    this.moveY = 'none'
 
-    //animations
+    // animations
     this.scene.anims.create({
       key: 'enemy_idle',
       frames: this.scene.anims.generateFrameNames('enemy', { start: 0, end: 7 }),
@@ -29,11 +26,10 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
     this.play('enemy_idle')
 
-
     this.scene.add.existing(this)
 
-    this.distance = 80
-    this.speed = 60
+    this.distance = 100
+    this.speed = Phaser.Math.RND.integerInRange(50, 70)
     this.originalX = this.x
     this.fminX = this.originalX - this.distance // 0 + 10 = 10
     this.fmaxX = this.originalX + this.distance // 0 - 10 = -10
@@ -43,28 +39,27 @@ class Enemy extends Phaser.GameObjects.Sprite {
     this.scene.physics.moveToObject(this, this.targetMin, this.speed)
   }
 
-  update(time, delta) 
-  {
-    this.movement()
+  update (time, delta) {
+    if (this.alive === true) {
+      this.movement()
+    }
   }
 
-  movement() {
+  movement () {
     this.anims.play('enemy_walk', true)
     if (this.x >= this.fmaxX) {
       this.setFlipX(true)
       this.scene.physics.moveToObject(this, this.targetMin, this.speed)
-    }
-    else if (this.x <= this.fminX) {
+    } else if (this.x <= this.fminX) {
       this.setFlipX(false)
       this.scene.physics.moveToObject(this, this.targetMax, this.speed)
     }
-  } 
-
-  die()
-  {
-    this.destroy()
   }
 
+  die () {
+    this.alive = false
+    this.destroy()
+  }
 }
 
 export default Enemy

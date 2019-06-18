@@ -15,17 +15,40 @@ class UIScene extends Phaser.Scene {
       fill: '#fff'
     })
 
-    this.lives = this.add.text(this.sys.game.config.width - this.coins.displayWidth - marginX, marginY, `Lives: ${this.registry.get('lives_current')} / ${this.registry.get('lives_max')}`, {
+    this.lives = this.add.group()
+    this.printLives()
+
+    this.levelName = this.add.text(0, 0, `${this.registry.get('level')}`, {
       font: '28px arcade',
       fill: '#fff'
     })
+    this.levelName.setPosition(this.sys.game.config.width / 2 - (this.levelName.displayWidth / 2), 0 + marginY)
 
-    const level = this.scene.get('LevelAScene')
-    level.events.on('coinChange', this.updateCoins, this)
-    level.events.on('livesChange', this.updateLives, this)
+    // events levelA
+    const levelAScene = this.scene.get('LevelAScene')
+    levelAScene.events.on('coinChange', this.updateCoins, this)
+    levelAScene.events.on('livesChange', this.updateLives, this)
+    levelAScene.events.on('gameOver', this.gameOver, this)
+    levelAScene.events.on('gameComplete', () => { this.levelComplete() }, this)
+    levelAScene.events.on('levelChange', this.updateLevel, this)
 
-    level.events.on('gameOver', this.gameOver, this)
-    level.events.on('gameComplete', () => { this.levelComplete() }, this)
+    // events levelB
+    const levelBScene = this.scene.get('LevelBScene')
+    levelBScene.events.on('levelChange', this.updateLevel, this)
+    levelBScene.events.on('coinChange', this.updateCoins, this)
+    levelBScene.events.on('livesChange', this.updateLives, this)
+    levelBScene.events.on('gameOver', this.gameOver, this)
+    levelBScene.events.on('gameComplete', () => { this.levelComplete() }, this)
+  }
+
+  printLives () {
+    this.lives.clear()
+    let lives = this.registry.get('lives_current')
+    for (let index = 0; index < lives; index++) {
+      this.lives.create(0, 0, 'heart')
+    }
+    Phaser.Actions.SetXY(this.lives.getChildren(), this.sys.game.config.width - this.coins.displayWidth, 36, 20)
+    Phaser.Actions.SetScale(this.lives.getChildren(), 2, 2)
   }
 
   updateCoins () {
@@ -33,7 +56,12 @@ class UIScene extends Phaser.Scene {
   }
 
   updateLives () {
-    this.lives.setText(`Lives: ${this.registry.get('lives_current')} / ${this.registry.get('lives_max')}`)
+    this.printLives()
+    // this.lives.setText(`Lives: ${this.registry.get('lives_current')} / ${this.registry.get('lives_max')}`)
+  }
+
+  updateLevel () {
+    this.levelName.setText(`${this.registry.get('level')}`)
   }
 
   levelComplete () {

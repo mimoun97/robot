@@ -5,13 +5,13 @@ export default class CompleteScene extends Phaser.Scene {
     super({
       key: 'CompleteScene'
     })
-    this.score
-    this.coin_value = 10
+    this.score = NaN
+    this.coinValue = 10
   }
 
   init (data) {
     let coins = this.registry.get('coins_current')
-    this.registry.set('score', coins * this.coin_value)
+    this.registry.set('score', coins * this.coinValue)
     this.score = this.registry.get('score')
   }
 

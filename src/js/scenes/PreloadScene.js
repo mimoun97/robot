@@ -69,6 +69,7 @@ class PreloadScene extends Phaser.Scene {
     this.load.image('back', backButtonImg)
     this.load.image('scores', scoresImg)
     this.load.spritesheet('music', musicButtonsImg, { frameWidth: 48, frameHeight: 48 })
+    this.load.image('heart', './img/ui/heart.png') // heart
 
     // if (Constants.IS_MOBILE) {
     //   this.loadControllers()
@@ -99,6 +100,7 @@ class PreloadScene extends Phaser.Scene {
 
   initRegistry () {
     // registry es accessible per totes les scenes, get i set
+    this.registry.set('level', undefined)
     this.registry.set('lives_max', 3)
     this.registry.set('lives_current', 3)
     this.registry.set('coins_max', NaN) // se contaran les monedes al iniciar el nivell
