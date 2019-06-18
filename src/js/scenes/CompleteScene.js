@@ -5,12 +5,14 @@ export default class CompleteScene extends Phaser.Scene {
     super({
       key: 'CompleteScene'
     })
-    // eslint-disable-next-line no-unused-expressions
     this.score
+    this.coin_value = 10
   }
 
   init (data) {
-    this.score = data.SCORE
+    let coins = this.registry.get('coins_current')
+    this.registry.set('score', coins * this.coin_value)
+    this.score = this.registry.get('score')
   }
 
   create () {

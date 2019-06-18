@@ -12,6 +12,8 @@ class MenuScene extends Phaser.Scene {
     console.debug('MenuScene: init()')
     console.log(Constants.TITLE)
 
+    this.input.setDefaultCursor('url(assets/img/ui/upLeft.cur), pointer')
+
     this.cameras.main.backgroundColor.setTo(2, 31, 40) // (0,188,212)
 
     this.bg = this.add.image(0, 0, 'bg')
@@ -25,6 +27,15 @@ class MenuScene extends Phaser.Scene {
       font: '97.7px arcade',
       fill: '#bfc0c1'
     })
+
+    this.authorText.setInteractive()
+    this.authorText.on('pointerover', () => { this.authorText.alpha = 0.7 })
+    this.authorText.on('pointerout', () => { this.authorText.alpha = 1 })
+    this.authorText.on('pointerdown',
+      () => {
+        let win = window.open('https://github.com/mimoun1997', '_blank')
+        win.focus()
+      })
 
     this.startButton = this.add.sprite(0, 0, 'start').setInteractive()
     this.startButton.setScale(1.61803, 1.61803)

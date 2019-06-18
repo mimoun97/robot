@@ -1,17 +1,18 @@
 import Phaser from 'phaser'
+// GameObjects/sprites
 import Player from '../objects/Player'
+import Coin from '../objects/Coin'
+import Enemy from '../objects/Enemy'
 
 class LevelAScene extends Phaser.Scene {
-  constructor () {
+  constructor() {
     super({
       key: 'LevelAScene'
     })
   }
 
-  create () {
+  create() {
     this.add.image(0, 0, 'bg').setOrigin(0)
-
-    // this.cameras.main.backgroundColor.setTo(0, 0, 0)
 
     this.createLevel()
 
@@ -24,8 +25,10 @@ class LevelAScene extends Phaser.Scene {
     this.addCollides()
   }
 
-  update (time, delta) {
+  update(time, delta) {
     this.player.update(time, delta)
+
+    this.enemy.update(time, delta)
 
     // level complete condition
     if (this.player.alive) {
@@ -43,7 +46,7 @@ class LevelAScene extends Phaser.Scene {
             this.time.addEvent(
               {
                 delay: 500,
-                callback: () => { this.scene.start('LevelBScene', { SCORE: coinsCurrent }) },
+                callback: () => { this.goToNextLevel() },
                 callbackScope: this
               })
           },
@@ -53,54 +56,44 @@ class LevelAScene extends Phaser.Scene {
     }
   }
 
-  addCollides () {
-    this.physics.add.collider(this.enemy, this.player)
-    this.physics.add.collider(this.enemy, this.WorldLayer)
+  addCollides() {
+    this.physics.add.collider(this.enemy, this.WorldLayer, (enemy, world) => {  })
     this.physics.add.collider(this.player, this.WorldLayer)
     this.physics.add.collider(this.player, this.enemy, (player, enemy) => { enemy.destroy() })
   }
 
-  createEnemy () {
+  createEnemy() {
     const enemyPoint = this.map.findObject('Objects', obj => obj.name === 'Enemy Point')
-    this.enemy = this.physics.add.sprite(enemyPoint.x, enemyPoint.y, 'enemy')
+    this.enemy = new Enemy({
+      scene: this,
+      x: enemyPoint.x,
+      y: enemyPoint.y
+    })
   }
 
-  createCoins () {
+  createCoins() {
     this.coins = this.physics.add.group()
-    console.log(this.coins)
-    this.coins.defaults.setAllowGravity = false
+    this.coins.defaults.setAllowGravity = false // coins in the air
 
     const objectsLayer = this.map.getObjectLayer('Objects')
-
-    this.anims.create({
-      key: 'coin',
-      frames: this.anims.generateFrameNames('coin', { frames: [0, 6] }),
-      frameRate: 8,
-      repeat: -1,
-      yoyo: true
-    })
 
     objectsLayer.objects.forEach(
       (object) => {
         if (object.type === 'coin') {
-          // let coins = new Coins({
-          //   scene: this,
-          //   x: object.x + 8,
-          //   y: object.y - 8,
-          //   number: coinNum
-          // })
-          // 16/2 = 8 => per a centrar
-          let coin = this.physics.add.sprite(object.x + 8, object.y - 8, 'coin').play('coin')
-          coin.setImmovable()
+          let coin = new Coin({
+            scene: this,
+            x: object.x + 8,
+            y: object.y - 8
+          })
           this.coins.add(coin)
         }
       })
 
-    this.registry.set('coins_max', this.coins.getLength())
-    this.events.emit('coinChange')
+    this.registry.set('coins_max', this.coins.getLength()) // count coins in level 
+    this.events.emit('coinChange') // update UI
   }
 
-  createPlayer () {
+  createPlayer() {
     const spawnPoint = this.map.findObject('Objects', obj => obj.name === 'Spawn Point')
 
     // create a new instance of the player class at the currently loaded spawnpoint
@@ -108,20 +101,18 @@ class LevelAScene extends Phaser.Scene {
       scene: this,
       x: spawnPoint.x,
       y: spawnPoint.y
-    }) // .play('player_idle')
+    })
 
-    // smooth follow
+    // smooth follow 
     this.camera.startFollow(this.player, true, 0.05, 0.05)
-
-    // this.camera.followOffset.set(0, 100)
+    this.camera.followOffset.set(0, 100)
   }
 
-  startGame () {
+  goToNextLevel() {
     this.scene.stop().start('LevelBScene')
-    // this.scene.start('LevelBScene')
   }
 
-  createLevel () {
+  createLevel() {
     console.log('sadsadsa')
     // Load a map from a 2D array of tile indices
     // When loading a CSV map, make sure to specify the tileWidth and tileHeight!
@@ -138,13 +129,13 @@ class LevelAScene extends Phaser.Scene {
 
     // Phaser supports multiple cameras, but you can access the default camera like this:
     this.camera = this.cameras.main
-    this.camera.zoom = 1.61803
+    // this.camera.zoom = 1.61803
 
     //  constraint camera
     this.camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
   }
 
-  showDebugPhysics () {
+  showDebugPhysics() {
     const debugGraphics = this.add.graphics().setAlpha(0.75)
     this.WorldLayer.renderDebug(debugGraphics, {
       tileColor: null, // Color of non-colliding tiles
