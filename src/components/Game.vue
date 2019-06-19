@@ -49,7 +49,7 @@ export default {
         default: 'arcade',
         arcade: {
           gravity: { y: 4000 },
-          debug: true
+          debug: false
         }
       },
       loader: {
