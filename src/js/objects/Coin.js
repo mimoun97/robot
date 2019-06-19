@@ -8,7 +8,7 @@ class Coin extends Phaser.GameObjects.Sprite {
     // this.sound = this.scene.sound.add('coinSFX')
     // this.sound.setVolume(.4)
 
-    this.body.setImmovable()
+    this.body.setImmovable(true)
 
     // add animations
     this.scene.anims.create({

@@ -20,7 +20,7 @@ class LevelAScene extends Phaser.Scene {
 
     this.coins = this.physics.add.group()
     this.coins.defaults.setAllowGravity = false // coins in the air
-    this.enemies = this.physics.add.group()
+    this.enemies = this.physics.add.group({ runChildUpdate: true }) // runChildUpdate -> foreach enemy.update()
 
     this.convertObjects()
 
@@ -30,20 +30,19 @@ class LevelAScene extends Phaser.Scene {
     // collisions
     this.physics.add.collider(this.enemies, this.WorldLayer)
     this.physics.add.collider(this.player, this.WorldLayer)
-    // this.physics.add.collider(this.player, this.enemy, (player, enemy) => { player.hit(player, enemy) })
-    console.log('ENEMIES: ', this.enemies.getChildren())
+    this.physics.add.collider(this.enemy, this.WorldLayer)
+    // this.physics.overlap(this, this.coins, (player, coin) => { player.pickup(player, coin) })
+    // this.physics.add.collider(this.enemy, this.enemies, (player, enemy) => { player.hit(player, enemy) })
+    this.physics.add.collider(this.player, this.enemy, (player, enemy) => { player.hit(player, enemy) })
+    this.physics.add.overlap(this.player, this.coins, (player, coin) => { coin.pickup() })
   }
 
   update (time, delta) {
     this.player.update(time, delta)
 
-    // TODO update
-    // this.enemy.update(time, delta)
-    // this.enemies.getChildren().forEach(enemy => {
-    //   enemy.update(time, delta)
-    // })
+    this.enemy.update(time, delta)
 
-    this.enemies.children.iterate((child) => { child.update() })
+    // TODO update enemies
 
     // level complete condition
     if (this.player.alive) {
@@ -72,9 +71,10 @@ class LevelAScene extends Phaser.Scene {
 
   convertObjects () {
     const objectsLayer = this.map.getObjectLayer('Objects')
-    // coins
+
     objectsLayer.objects.forEach(
       (object) => {
+        // coins
         if (object.type === 'coin') {
           let coin = new Coin({
             scene: this,
@@ -83,17 +83,22 @@ class LevelAScene extends Phaser.Scene {
           })
           this.coins.add(coin)
         }
-      })
-
-    objectsLayer.objects.forEach(
-      (object) => {
-        if (object.type === 'enemy') {
-          let enemy = new Enemy({
+        // // group enemies FIXME: update()..
+        // if (object.type === 'enemy') {
+        //   let enemy = new Enemy({
+        //     scene: this,
+        //     x: object.x + 8,
+        //     y: object.y - 8
+        //   })
+        //   this.enemies.add(enemy)
+        // }
+        // enemie 1
+        if (object.name === 'Enemy Point') {
+          this.enemy = new Enemy({
             scene: this,
             x: object.x + 8,
-            y: object.y - 8
+            y: object.y - 16
           })
-          this.enemies.add(enemy)
         }
       })
   }

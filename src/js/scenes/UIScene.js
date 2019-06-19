@@ -11,7 +11,7 @@ class UIScene extends Phaser.Scene {
     let marginY = 20
     let marginX = 20
 
-    // 
+    //
     this.coinsGroup = this.add.group()
     this.spriteCoin = this.add.sprite(0 + marginX + 16, marginY + 16, 'coin', 0)
     this.spriteCoin.setScale(2, 2)
@@ -20,7 +20,7 @@ class UIScene extends Phaser.Scene {
       fill: '#fff'
     })
 
-    this.lives = this.add.group({ maxSize: 3, })
+    this.lives = this.add.group({ maxSize: 3 })
     this.printLives()
 
     this.levelName = this.add.text(0, 0, `${this.registry.get('level')}`, {

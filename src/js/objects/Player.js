@@ -6,9 +6,10 @@ class Player extends Phaser.GameObjects.Sprite {
     config.scene.physics.world.enable(this)
     // this.body.setCollideWorldBounds(true) // FIXME: dont work well with tilemap
     this.scene = config.scene
+    this.body.setSize(16, 26, true).setOffset(0, 6) // good collision
     this.body.setDrag(8, 8)
     this.body.setBounce(0.5, 0.5)
-    this.body.gravity.y = 500
+    this.body.gravity.y = 200
     this.alive = true
     this.speed = 150
     this.jumpSpeed = 800
@@ -28,7 +29,7 @@ class Player extends Phaser.GameObjects.Sprite {
     this.scene.anims.create({
       key: 'player_walk',
       frames: this.scene.anims.generateFrameNames('player', { start: 0, end: 7 }),
-      frameRate: 8,
+      frameRate: 16,
       repeat: -1
     })
 
@@ -38,6 +39,10 @@ class Player extends Phaser.GameObjects.Sprite {
       frameRate: 8,
       repeat: -1
     })
+
+    // collision coins and enemies
+    this.scene.physics.overlap(this, this.scene.coins, this.pickup)
+    this.scene.physics.collide(this, this.scene.enemies, this.hit)
 
     // add player to scene
     this.scene.add.existing(this)
@@ -54,8 +59,6 @@ class Player extends Phaser.GameObjects.Sprite {
         this.deathSound.play()
         this.scene.time.addEvent({ delay: 1000, callback: this.gameOver, callbackScope: this })
       }
-
-      this.scene.physics.overlap(this, this.scene.coins, this.pickup)
 
       this.playerMovement()
     }
@@ -88,8 +91,11 @@ class Player extends Phaser.GameObjects.Sprite {
 
   hit (player, enemy) {
     enemy.die()
-    this.setTint(0x8e2f15)
+    this.setTint(0xe20408)
     this.scene.time.addEvent({ delay: 1000, callback: this.normalize, callbackScope: this })
+    let lives = this.scene.registry.get('lives_current')
+    this.scene.registry.set('lives_current', lives - 1)
+    this.scene.events.emit('livesChange')
   }
 
   pickup (player, coin) {

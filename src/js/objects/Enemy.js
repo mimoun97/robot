@@ -29,7 +29,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
     this.scene.add.existing(this)
 
     this.distance = 100
-    this.speed = Phaser.Math.RND.integerInRange(50, 70)
+    this.speed = 60 // Phaser.Math.RND.integerInRange(50, 70)
     this.originalX = this.x
     this.fminX = this.originalX - this.distance // 0 + 10 = 10
     this.fmaxX = this.originalX + this.distance // 0 - 10 = -10
@@ -40,19 +40,16 @@ class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   update (time, delta) {
-    if (this.alive === true) {
-      this.movement()
-    }
-  }
-
-  movement () {
-    this.anims.play('enemy_walk', true)
-    if (this.x >= this.fmaxX) {
-      this.setFlipX(true)
-      this.scene.physics.moveToObject(this, this.targetMin, this.speed)
-    } else if (this.x <= this.fminX) {
-      this.setFlipX(false)
-      this.scene.physics.moveToObject(this, this.targetMax, this.speed)
+    if (this.alive) {
+      // movement
+      this.anims.play('enemy_walk', true)
+      if (this.x >= this.fmaxX) {
+        this.setFlipX(true)
+        this.scene.physics.moveToObject(this, this.targetMin, this.speed)
+      } else if (this.x <= this.fminX) {
+        this.setFlipX(false)
+        this.scene.physics.moveToObject(this, this.targetMax, this.speed)
+      }
     }
   }
 
