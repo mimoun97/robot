@@ -10,12 +10,17 @@ class UIScene extends Phaser.Scene {
   create () {
     let marginY = 20
     let marginX = 20
-    this.coins = this.add.text(0 + marginX, marginY, `Coins: ${this.registry.get('coins_current')} / ${this.registry.get('coins_max')}`, {
+
+    // 
+    this.coinsGroup = this.add.group()
+    this.spriteCoin = this.add.sprite(0 + marginX + 16, marginY + 16, 'coin', 0)
+    this.spriteCoin.setScale(2, 2)
+    this.coins = this.add.text(0 + marginX + 32 * 2, marginY, `${this.registry.get('coins_current')} / ${this.registry.get('coins_max')}`, {
       font: '28px arcade',
       fill: '#fff'
     })
 
-    this.lives = this.add.group()
+    this.lives = this.add.group({ maxSize: 3, })
     this.printLives()
 
     this.levelName = this.add.text(0, 0, `${this.registry.get('level')}`, {
@@ -42,7 +47,7 @@ class UIScene extends Phaser.Scene {
   }
 
   printLives () {
-    this.lives.clear()
+    this.lives.clear({ removeFromScene: true, destroyChild: true })
     let lives = this.registry.get('lives_current')
     for (let index = 0; index < lives; index++) {
       this.lives.create(0, 0, 'heart')
@@ -52,7 +57,7 @@ class UIScene extends Phaser.Scene {
   }
 
   updateCoins () {
-    this.coins.setText(`Coins: ${this.registry.get('coins_current')} / ${this.registry.get('coins_max')}`)
+    this.coins.setText(`${this.registry.get('coins_current')} / ${this.registry.get('coins_max')}`)
   }
 
   updateLives () {
