@@ -58,6 +58,17 @@ class UIScene extends Phaser.Scene {
 
   updateCoins () {
     this.coins.setText(`${this.registry.get('coins_current')} / ${this.registry.get('coins_max')}`)
+    // this.tweens.add({
+    //   targets: this.coins,
+    //   callbackScope: this,
+    //   scaleX: 1,
+    //   scaleY: 1,
+    //   ease: 'Linear',
+    //   duration: 300,
+    //   yoyo: false,
+    //   repeat: 0,
+    //   onComplete: () => {  }
+    // })
   }
 
   updateLives () {

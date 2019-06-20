@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 
 class Player extends Phaser.GameObjects.Sprite {
-  constructor (config) {
+  constructor(config) {
     super(config.scene, config.x, config.y, 'player')
     config.scene.physics.world.enable(this)
     // this.body.setCollideWorldBounds(true) // FIXME: dont work well with tilemap
@@ -15,18 +15,39 @@ class Player extends Phaser.GameObjects.Sprite {
     this.jumpSpeed = 800
     this.cursors = this.scene.input.keyboard.createCursorKeys()
 
-    // TODO sounds
+    // sounds
     this.jumpSound = this.scene.sound.add('jump')
     this.jumpSound.setVolume(0.2)
-
-    //   this.hurtSound = this.scene.sound.add('hurt')
-    //   this.hurtSound.setVolume(.4)
-
     this.deadSound = this.scene.sound.add('dead')
     this.deadSound.setVolume(0.4)
-
     this.damageSound = this.scene.sound.add('damage')
     this.damageSound.setVolume(0.4)
+
+    // TODO particles
+    this.dustParticles = this.scene.add.particles('dust')
+    this.dust = this.dustParticles.createEmitter(
+      {
+        x: this.x,
+        y: this.y,
+        speedX: { min: -100, max: 100 },
+        speedY: { min: -100, max: 100 },
+        alpha: { min: 0, max: 1 },
+        lifespan: 300,
+        on: false, // dont start
+        active: true
+      })
+    this.expParticles = this.scene.add.particles('exp')
+    this.exp = this.expParticles.createEmitter(
+      {
+        x: this.x,
+        y: this.y,
+        speedX: { min: -150, max: 150 },
+        speedY: { min: -150, max: 150 },
+        alpha: { min: 0, max: 1 },
+        lifespan: 200,
+        on: false, // dont start
+        active: true
+      })
 
     // Create the animations we need from the player spritesheet
     this.scene.anims.create({
@@ -53,7 +74,7 @@ class Player extends Phaser.GameObjects.Sprite {
     this.anims.play('player_idle', true)
   }
 
-  update (time, delta) {
+  update(time, delta) {
     if (this.alive) {
       let livesCurrent = this.scene.registry.get('lives_current')
       if (livesCurrent <= 0) {
@@ -67,7 +88,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
-  playerMovement () {
+  playerMovement() {
     if (this.cursors.left.isDown) {
       this.body.setVelocityX(-this.speed)
       this.setFlipX(true)
@@ -86,23 +107,28 @@ class Player extends Phaser.GameObjects.Sprite {
     if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.body.onFloor()) {
       this.body.setVelocityY(-this.jumpSpeed)
       this.jumpSound.play()
+      // particles
+      this.dust.explode(15, this.x, this.y + 16)
+      this.exp.explode(5, this.x, this.y + 16)
     }
+
+
   }
 
-  hit (player, enemy) {
+  hit(player, enemy) {
     this.damageSound.play()
     enemy.die()
     this.setTint(0xe20408)
-    this.scene.time.addEvent({ delay: 1000, callback: this.normalize, callbackScope: this })
+    this.scene.time.addEvent({ delay: 1000, callback: this.normalize(), callbackScope: this })
     let lives = this.scene.registry.get('lives_current')
     this.scene.registry.set('lives_current', lives - 1)
     this.scene.events.emit('livesChange')
   }
 
-  pickup (player, coin) {
+  pickup(player, coin) {
     coin.pickup()
   }
-  normalize () {
+  normalize() {
     if (this.alive) {
       this.setTint(0xffffff)
     }

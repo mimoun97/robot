@@ -84,19 +84,16 @@ class PreloadScene extends Phaser.Scene {
   }
 
   preloadImages () {
-    // background image
     this.load.image('bg', 'img/bg.jpg')
     this.load.image('logo', 'img/logo.png')
-    // tilesets
     this.load.image('tiles', './img/tilesets/16x16RobotTileset.v1.png')
     this.load.tilemapTiledJSON('map', './img/tilesets/projecte_robot.json')
-
-    // player
     this.load.spritesheet('player', './img/tilesets/player.png', { frameWidth: 16, frameHeight: 32 })
-    // enemy
     this.load.spritesheet('enemy', './img/tilesets/enemy.png', { frameWidth: 16, frameHeight: 32 })
-    // coins
     this.load.spritesheet('coin', './img/coins.png', { frameWidth: 16, frameHeight: 16 })
+    this.load.image('dust', 'img/dust.png')
+    this.load.image('exp', 'img/exp.png')
+    this.load.image('random', 'img/random.png')
   }
 
   initRegistry () {
@@ -119,6 +116,7 @@ class PreloadScene extends Phaser.Scene {
     this.load.audio('click', './sounds/click.wav')
     this.load.audio('enemyDeath', './sounds/enemyDeath.wav')
     this.load.audio('damage', './sounds/damage.wav')
+    this.load.audio('key', './sounds/key.wav')
   }
 
   preloadMusic () {

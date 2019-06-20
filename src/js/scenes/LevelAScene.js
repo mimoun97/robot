@@ -36,7 +36,7 @@ class LevelAScene extends Phaser.Scene {
 
     this.physics.add.overlap(this.player, this.enemies, (player, enemy) => { player.hit(player, enemy) })
     this.physics.add.overlap(this.player, this.coins, (player, coin) => { coin.pickup() })
-    this.physics.add.overlap(this.player, this.key, (player, key) => { key.take() })
+    this.physics.add.overlap(this.player, this.key,(player, key) => { key.take(player, key) })
   }
 
   update (time, delta) {
@@ -108,13 +108,13 @@ class LevelAScene extends Phaser.Scene {
   }
 
   createPlayer () {
-    const spawnPoint = this.map.findObject('Objects', obj => obj.name === 'Spawn Point')
+    this.spawnPoint = this.map.findObject('Objects', obj => obj.name === 'Spawn Point')
 
     // create a new instance of the player class at the currently loaded spawnpoint
     this.player = new Player({
       scene: this,
-      x: spawnPoint.x,
-      y: spawnPoint.y
+      x: this.spawnPoint.x,
+      y: this.spawnPoint.y
     })
 
     // smooth follow
