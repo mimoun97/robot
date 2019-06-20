@@ -11,14 +11,16 @@ class ScoresScene extends Phaser.Scene {
   create () {
     console.debug('ScoresScene: init()')
 
-    // this.cameras.main.backgroundColor.setTo(50,188,30)
+    this.cameras.main.setBackgroundColor('#021f28')
+
+    this.clickSound = this.sound.add('click')
 
     this.titleText = this.add.text(0, 0, 'HIGH SCORE', {
       font: '155px arcade',
       fill: '#fff'
     })
 
-    let SCORE = 500
+    let SCORE = this.registry.get('high_score')
     this.primer = this.add.text(0, 0, SCORE, {
       font: '96px arcade',
       fill: 'yellow'
@@ -29,7 +31,11 @@ class ScoresScene extends Phaser.Scene {
     this.backButton.setScale(1.61803, 1.61803)
     this.backButton.on('pointerover', () => { this.backButton.alpha = 0.7 })
     this.backButton.on('pointerout', () => { this.backButton.alpha = 1 })
-    this.backButton.on('pointerdown', () => { this.scene.start('MenuScene') })
+    this.backButton.on('pointerdown',
+      () => {
+        this.clickSound.play()
+        this.scene.start('MenuScene')
+      })
 
     this.alignElements()
   }

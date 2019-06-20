@@ -26,12 +26,17 @@ class PreloadScene extends Phaser.Scene {
   }
   preload () {
     // debugger
+    this.addProgressPlus() // loading bar
+    this.loadUiElements() // buttons and ui images
+    this.preloadImages() // images and spritesheets
+    this.preloadSounds() // game sounds
+    this.preloadMusic() // game musics
+  }
 
-    this.addProgressPlus()
-
-    this.loadUiElements()
-
-    this.preloadImages()
+  create () {
+    this.input.setDefaultCursor('url(assets/img/ui/upLeft.cur), pointer')
+    this.initRegistry()
+    this.scene.start('MenuScene')
   }
 
   isMobile () {
@@ -41,7 +46,7 @@ class PreloadScene extends Phaser.Scene {
 
   addProgressPlus () {
     // create a background and prepare loading bar
-    this.cameras.main.setBackgroundColor(0x021f28)
+    this.cameras.main.setBackgroundColor('#021f28')
     this.fullBar = this.add.graphics()
     this.fullBar.fillStyle(0xbfc0c1, 1) // bfc0c1 0x3494d9
     this.fullBar.fillRect((this.cameras.main.width / 4) - 2, (this.cameras.main.height / 2) - 18, (this.cameras.main.width / 2) + 4, 20)
@@ -70,7 +75,9 @@ class PreloadScene extends Phaser.Scene {
     this.load.image('scores', scoresImg)
     this.load.spritesheet('music', musicButtonsImg, { frameWidth: 48, frameHeight: 48 })
     this.load.image('heart', './img/ui/heart.png') // heart
+    this.load.image('key', './img/key.png') // key
 
+    // TODO mobile controllers
     // if (Constants.IS_MOBILE) {
     //   this.loadControllers()
     // }
@@ -92,12 +99,6 @@ class PreloadScene extends Phaser.Scene {
     this.load.spritesheet('coin', './img/coins.png', { frameWidth: 16, frameHeight: 16 })
   }
 
-  create () {
-    this.initRegistry()
-
-    this.scene.start('MenuScene')
-  }
-
   initRegistry () {
     // registry es accessible per totes les scenes, get i set
     this.registry.set('level', undefined)
@@ -107,6 +108,25 @@ class PreloadScene extends Phaser.Scene {
     this.registry.set('coins_current', 0)
     this.registry.set('score', 0)
     this.registry.set('high_score', localStorage.getItem('high_score') || 0)
+  }
+
+  preloadSounds () {
+    // load audios
+    this.load.audio('coin', ['./sounds/coin.wav', './sounds/coin.mp3'])
+    this.load.audio('dead', ['./sounds/dead.wav', './sounds/dead.mp3'])
+    this.load.audio('dust', ['./sounds/dust.wav', './sounds/dust.mp3'])
+    this.load.audio('jump', ['./sounds/jump.wav', './sounds/jump.mp3'])
+    this.load.audio('click', './sounds/click.wav')
+    this.load.audio('enemyDeath', './sounds/enemyDeath.wav')
+    this.load.audio('damage', './sounds/damage.wav')
+  }
+
+  preloadMusic () {
+    this.load.audio('MenuMusic', './music/Menu.mp3')
+    this.load.audio('LevelAMusic', './music/LevelA.mp3')
+    this.load.audio('LevelBMusic', './music/LevelB.mp3')
+    this.load.audio('GameOverMusic', './music/GameOver.mp3')
+    this.load.audio('GameCompleteMusic', './music/Final.mp3')
   }
 }
 

@@ -77,7 +77,7 @@ class UIScene extends Phaser.Scene {
 
   gameOver () {
     this.lives.destroy()
-    this.coins.destroy()
+    this.coinsGroup.destroy()
     this.scene.stop()
   }
 }

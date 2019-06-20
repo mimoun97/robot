@@ -5,8 +5,8 @@ class Coin extends Phaser.GameObjects.Sprite {
     super(config.scene, config.x, config.y, 'coin')
     config.scene.physics.world.enable(this)
     this.scene = config.scene
-    // this.sound = this.scene.sound.add('coinSFX')
-    // this.sound.setVolume(.4)
+    this.sound = this.scene.sound.add('coin')
+    this.sound.setVolume(0.4)
 
     this.body.setImmovable(true)
 
@@ -18,11 +18,22 @@ class Coin extends Phaser.GameObjects.Sprite {
       repeat: -1
     })
     this.play('coin') // play animation
+    // floating animation
+    this.tween = this.scene.tweens.add({
+      targets: this,
+      x: this.x,
+      y: this.y - 4,
+      ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 500,
+      repeat: -1, // -1: infinity
+      yoyo: true
+    })
+    this.tween.play()
     this.scene.add.existing(this)
   }
 
   pickup () {
-    // this.sound.play()
+    this.sound.play()
     let coins = this.scene.registry.get('coins_current')
     this.scene.registry.set('coins_current', coins + 1)
     this.scene.events.emit('coinChange')

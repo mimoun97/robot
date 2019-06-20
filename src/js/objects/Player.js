@@ -16,14 +16,17 @@ class Player extends Phaser.GameObjects.Sprite {
     this.cursors = this.scene.input.keyboard.createCursorKeys()
 
     // TODO sounds
-    //   this.jumpSound = this.scene.sound.add('jump')
-    //   this.jumpSound.setVolume(.4)
+    this.jumpSound = this.scene.sound.add('jump')
+    this.jumpSound.setVolume(0.2)
 
     //   this.hurtSound = this.scene.sound.add('hurt')
     //   this.hurtSound.setVolume(.4)
 
-    //   this.deathSound = this.scene.sound.add('death')
-    //   this.deathSound.setVolume(.4)
+    this.deadSound = this.scene.sound.add('dead')
+    this.deadSound.setVolume(0.4)
+
+    this.damageSound = this.scene.sound.add('damage')
+    this.damageSound.setVolume(0.4)
 
     // Create the animations we need from the player spritesheet
     this.scene.anims.create({
@@ -42,7 +45,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
     // collision coins and enemies
     this.scene.physics.overlap(this, this.scene.coins, this.pickup)
-    this.scene.physics.collide(this, this.scene.enemies, this.hit)
+    // this.scene.physics.collide(this, this.scene.enemies, this.hit)
 
     // add player to scene
     this.scene.add.existing(this)
@@ -52,12 +55,12 @@ class Player extends Phaser.GameObjects.Sprite {
 
   update (time, delta) {
     if (this.alive) {
-      let healthCurrent = this.scene.registry.get('player_lifes')
-      if (healthCurrent <= 0) {
+      let livesCurrent = this.scene.registry.get('lives_current')
+      if (livesCurrent <= 0) {
         this.alive = false
         this.setTint(0x2a0503)
-        this.deathSound.play()
-        this.scene.time.addEvent({ delay: 1000, callback: this.gameOver, callbackScope: this })
+        this.deadSound.play()
+        this.scene.time.addEvent({ delay: 1000, callback: () => { this.scene.gameOver() }, callbackScope: this })
       }
 
       this.playerMovement()
@@ -65,7 +68,6 @@ class Player extends Phaser.GameObjects.Sprite {
   }
 
   playerMovement () {
-    let numberJumps = 0
     if (this.cursors.left.isDown) {
       this.body.setVelocityX(-this.speed)
       this.setFlipX(true)
@@ -77,19 +79,18 @@ class Player extends Phaser.GameObjects.Sprite {
     } else {
       this.body.setVelocityX(0)
       this.anims.play('player_idle', true)
-      numberJumps = 0
     }
 
     if (this.body.velocity === 0) { this.anims.play('player_idle') }
 
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.body.onFloor() && numberJumps < 1) {
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.body.onFloor()) {
       this.body.setVelocityY(-this.jumpSpeed)
-      // this.jumpSound.play()
-      numberJumps++
+      this.jumpSound.play()
     }
   }
 
   hit (player, enemy) {
+    this.damageSound.play()
     enemy.die()
     this.setTint(0xe20408)
     this.scene.time.addEvent({ delay: 1000, callback: this.normalize, callbackScope: this })

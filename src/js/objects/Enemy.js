@@ -9,6 +9,9 @@ class Enemy extends Phaser.GameObjects.Sprite {
     this.body.setBounce(0.5, 0.5)
     this.alive = true
 
+    this.deathSound = this.scene.sound.add('enemyDeath')
+    this.deathSound.setVolume(0.6)
+
     // animations
     this.scene.anims.create({
       key: 'enemy_idle',
@@ -29,14 +32,17 @@ class Enemy extends Phaser.GameObjects.Sprite {
     this.scene.add.existing(this)
 
     this.distance = 100
-    this.speed = 60 // Phaser.Math.RND.integerInRange(50, 70)
+    this.speed = 60
     this.originalX = this.x
     this.fminX = this.originalX - this.distance // 0 + 10 = 10
     this.fmaxX = this.originalX + this.distance // 0 - 10 = -10
     this.direction = -1
     this.targetMin = new Phaser.Math.Vector2(this.fminX, this.y)
     this.targetMax = new Phaser.Math.Vector2(this.fmaxX, this.y)
-    this.scene.physics.moveToObject(this, this.targetMin, this.speed)
+
+    // move player to x or y
+    let decision = Phaser.Math.RND.integerInRange(1, 2)
+    this.scene.physics.moveToObject(this, decision === 1 ? this.targetMin : this.targetMax, this.speed)
   }
 
   update (time, delta) {
@@ -54,6 +60,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   die () {
+    this.deathSound.play()
     this.alive = false
     this.destroy()
   }

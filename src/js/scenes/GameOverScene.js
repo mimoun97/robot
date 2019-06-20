@@ -1,9 +1,9 @@
 import Phaser from 'phaser'
 
-export default class CompleteScene extends Phaser.Scene {
+export default class GameOverScene extends Phaser.Scene {
   constructor (test) {
     super({
-      key: 'CompleteScene'
+      key: 'GameOverScene'
     })
     this.score = NaN
     this.coinValue = 10
@@ -20,35 +20,28 @@ export default class CompleteScene extends Phaser.Scene {
   }
 
   create () {
-    this.cameras.main.backgroundColor.setTo(76, 175, 80)
-    this.cameras.main.backgroundColor.setTo(2, 31, 40)
+    this.cameras.main.backgroundColor.setTo('#fff')
+
+    // load and play bg music
+    this.music = this.sound.add('GameOverMusic')
+    this.music.setLoop(true)
+    this.music.play()
 
     let overText = this.add.text(0, 0,
-      'LEVEL COMPLETE!',
+      'GAME OVER',
       {
         font: '97px arcade',
         fill: '#fff'
       })
 
-    let HICHSCORE = this.registry.get('high_score')
-    if (this.score > HICHSCORE) {
-      HICHSCORE = this.score
-    }
     let scoreText = this.add.text(0, 0,
-      'High score ' + HICHSCORE,
+      'Score ' + this.score,
       {
-        font: '56px arcade',
+        font: '72px arcade',
         fill: '#009688'
       })
 
-    let highScore = this.add.text(0, 0,
-      'score ' + this.score,
-      {
-        font: '96px arcade',
-        fill: '#2196f3'
-      })
-
-    let menuText = this.add.text(0, 0, 'MENU', {
+    let menuText = this.add.text(0, 0, 'RESTART', {
       font: '56px arcade',
       fill: '#f4fc07'
     }).setInteractive()
@@ -61,14 +54,10 @@ export default class CompleteScene extends Phaser.Scene {
     //  Center the texts in the game
     Phaser.Display.Align.In.Center(
       overText,
-      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 5, this.sys.game.config.width, this.sys.game.config.height)
-    )
-    Phaser.Display.Align.In.Center(
-      scoreText,
       this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 3, this.sys.game.config.width, this.sys.game.config.height)
     )
     Phaser.Display.Align.In.Center(
-      highScore,
+      scoreText,
       this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2, this.sys.game.config.width, this.sys.game.config.height)
     )
     Phaser.Display.Align.In.Center(
@@ -79,6 +68,5 @@ export default class CompleteScene extends Phaser.Scene {
 
   startGame () {
     location.reload()
-    // this.scene.stop().start('MenuScene')
   }
 }
