@@ -5,10 +5,7 @@ const Constants = {
   WIDTH: 800,
   HEIGHT: 600,
   VOLUME: 0.4,
-  SOUND_ON: true,
-  SOUND_PLAYING: false,
-  MUSIC_ON: true,
-  MUSIC_PLAYING: false,
+  SOUND_ON: false,
   IS_MOBILE: false
 }
 

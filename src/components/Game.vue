@@ -16,6 +16,7 @@ import CreditsScene from '../js/scenes/CreditsScene'
 import ScoresScene from '../js/scenes/ScoresScene'
 import UIScene from '../js/scenes/UIScene'
 import CompleteScene from '../js/scenes/CompleteScene'
+import GameOverScene from '../js/scenes/GameOverScene'
 
 export default {
   name: 'Game',
@@ -43,7 +44,8 @@ export default {
         CreditsScene,
         ScoresScene,
         UIScene,
-        CompleteScene // game complete scene
+        CompleteScene, // game complete scene
+        GameOverScene
       ],
       physics: {
         default: 'arcade',
