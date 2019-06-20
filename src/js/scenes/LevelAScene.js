@@ -3,6 +3,7 @@ import Phaser from 'phaser'
 import Player from '../objects/Player'
 import Coin from '../objects/Coin'
 import Enemy from '../objects/Enemy'
+import Key from '../objects/Key'
 
 class LevelAScene extends Phaser.Scene {
   constructor () {
@@ -30,17 +31,30 @@ class LevelAScene extends Phaser.Scene {
     // collisions
     this.physics.add.collider(this.enemies, this.WorldLayer)
     this.physics.add.collider(this.player, this.WorldLayer)
+    this.physics.add.collider(this.key, this.WorldLayer)
+    // collision enemies
     this.physics.add.collider(this.enemy, this.WorldLayer)
+    this.physics.add.collider(this.enemy2, this.WorldLayer)
+    this.physics.add.collider(this.enemy3, this.WorldLayer)
+
     // this.physics.overlap(this, this.coins, (player, coin) => { player.pickup(player, coin) })
     // this.physics.add.collider(this.enemy, this.enemies, (player, enemy) => { player.hit(player, enemy) })
     this.physics.add.collider(this.player, this.enemy, (player, enemy) => { player.hit(player, enemy) })
+    this.physics.add.collider(this.player, this.enemy2, (player, enemy) => { player.hit(player, enemy) })
+    this.physics.add.collider(this.player, this.enemy3, (player, enemy) => { player.hit(player, enemy) })
+
     this.physics.add.overlap(this.player, this.coins, (player, coin) => { coin.pickup() })
+    this.physics.add.overlap(this.player, this.key, (player, key) => { key.take() })
   }
 
   update (time, delta) {
     this.player.update(time, delta)
 
     this.enemy.update(time, delta)
+    this.enemy2.update(time, delta)
+    this.enemy3.update(time, delta)
+    // this.enemy4.update(time, delta)
+    // this.enemy5.update(time, delta)
 
     // TODO update enemies
 
@@ -49,7 +63,13 @@ class LevelAScene extends Phaser.Scene {
       let coinsCurrent = this.registry.get('coins_current')
       let coinsMax = this.registry.get('coins_max')
       if (coinsCurrent >= coinsMax) {
-        this.player.alive = false
+        this.nextLevel()
+      }
+    }
+  }
+
+  nextLevel() {
+    this.player.alive = false
         this.player.body.setVelocity(0)
         this.time.addEvent({
           delay: 500,
@@ -65,8 +85,6 @@ class LevelAScene extends Phaser.Scene {
           },
           callbackScope: this
         })
-      }
-    }
   }
 
   convertObjects () {
@@ -98,6 +116,30 @@ class LevelAScene extends Phaser.Scene {
             scene: this,
             x: object.x + 8,
             y: object.y - 16
+          })
+        }
+        // enemie 2
+        if (object.name === 'Enemy Point 2') {
+          this.enemy2 = new Enemy({
+            scene: this,
+            x: object.x + 8,
+            y: object.y - 16
+          })
+        }
+        // enemie 3
+        if (object.name === 'Enemy Point 3') {
+          this.enemy3 = new Enemy({
+            scene: this,
+            x: object.x + 8,
+            y: object.y - 16
+          })
+        }
+        // key
+        if (object.name === 'Key Point') {
+          this.key = new Key({
+            scene: this,
+            x: object.x,
+            y: object.y
           })
         }
       })
