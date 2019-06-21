@@ -20,7 +20,7 @@ class UIScene extends Phaser.Scene {
       fill: '#fff'
     })
 
-    this.lives = this.add.group({ maxSize: 3 })
+    this.lives = this.add.group({ maxSize: this.registry.get('lives_max') })
     this.printLives()
 
     this.levelName = this.add.text(0, 0, `${this.registry.get('level')}`, {

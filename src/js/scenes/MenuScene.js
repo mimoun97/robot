@@ -9,9 +9,14 @@ class MenuScene extends Phaser.Scene {
     })
   }
 
+  init (data) {
+    this.seekTime = data.SEEK || 0 // FIXME: resume music at same time
+  }
+
   create () {
     // load and play bg music
     this.music = this.sound.add('MenuMusic')
+    this.music.setSeek(this.seekTime)
     this.music.setLoop(true)
     this.music.play()
 
@@ -147,15 +152,17 @@ class MenuScene extends Phaser.Scene {
   }
 
   startScores () {
+    let seek = this.music.seek
     this.clickSound.play()
     this.music.stop()
-    this.scene.start('ScoresScene')
+    this.scene.start('ScoresScene', { SEEK: seek }) // seek time
   }
 
   startCredits () {
+    let seek = this.music.seek
     this.clickSound.play()
     this.music.stop()
-    this.scene.start('CreditsScene')
+    this.scene.start('CreditsScene', { SEEK: seek }) // seek time
   }
 }
 

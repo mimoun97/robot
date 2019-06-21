@@ -88,7 +88,8 @@ class PreloadScene extends Phaser.Scene {
     this.load.image('bg', 'img/bg.jpg')
     this.load.image('logo', 'img/logo.png')
     this.load.image('tiles', './img/tilesets/16x16RobotTileset.v1.png')
-    this.load.tilemapTiledJSON('map', './img/tilesets/projecte_robot.json')
+    this.load.tilemapTiledJSON('levelA', './img/tilesets/projecte_robot.json')
+    this.load.tilemapTiledJSON('levelB', './img/tilesets/levelB.json')
     this.load.spritesheet('player', './img/tilesets/player.png', { frameWidth: 16, frameHeight: 32 })
     this.load.spritesheet('enemy', './img/tilesets/enemy.png', { frameWidth: 16, frameHeight: 32 })
     this.load.spritesheet('coin', './img/coins.png', { frameWidth: 16, frameHeight: 16 })
@@ -101,7 +102,7 @@ class PreloadScene extends Phaser.Scene {
     // registry es accessible per totes les scenes, get i set
     this.registry.set('level', undefined)
     this.registry.set('lives_max', 3)
-    this.registry.set('lives_current', 3)
+    this.registry.set('lives_current', this.registry.get('lives_max'))
     this.registry.set('coins_max', NaN) // se contaran les monedes al iniciar el nivell
     this.registry.set('coins_current', 0)
     this.registry.set('score', 0)

@@ -18,11 +18,9 @@ class LevelAScene extends Phaser.Scene {
     this.events.emit('levelChange') // update ui level name
 
     this.createLevel()
-
     this.coins = this.physics.add.group()
     this.coins.defaults.setAllowGravity = false // coins in the air
     this.enemies = this.add.group({ runChildUpdate: true }) // runChildUpdate -> foreach enemy.update()
-
     this.convertObjects()
 
     // smooth follow
@@ -36,7 +34,6 @@ class LevelAScene extends Phaser.Scene {
     this.physics.add.collider(this.enemies, this.WorldLayer)
     this.physics.add.collider(this.player, this.WorldLayer)
     this.physics.add.collider(this.key, this.WorldLayer)
-
     this.physics.add.overlap(this.player, this.enemies, (player, enemy) => { player.hit(player, enemy) })
     this.physics.add.overlap(this.player, this.coins, (player, coin) => { coin.pickup() })
     this.physics.add.overlap(this.player, this.key, (player, key) => { key.take(player, key) })
@@ -45,14 +42,21 @@ class LevelAScene extends Phaser.Scene {
   update (time, delta) {
     this.player.update(time, delta)
 
-    // TODO update enemies
-
     // level complete condition
     if (this.player.alive) {
       let coinsCurrent = this.registry.get('coins_current')
       let coinsMax = this.registry.get('coins_max')
       if (coinsCurrent >= coinsMax) {
         this.nextLevel()
+      }
+    }
+
+    // lost condition
+    if (this.player.alive) {
+      let lives = this.registry.get('lives_current')
+      if (lives <= 0) {
+        this.player.body.setEnable(false)
+        this.gameOver()
       }
     }
   }
@@ -77,7 +81,7 @@ class LevelAScene extends Phaser.Scene {
   }
 
   convertObjects () {
-    const objectsLayer = this.map.getObjectLayer('Objects')
+    const objectsLayer = this.levelA.getObjectLayer('Objects')
 
     objectsLayer.objects.forEach(
       (object) => {
@@ -127,10 +131,10 @@ class LevelAScene extends Phaser.Scene {
     this.music.setLoop(true)
     this.music.play()
 
-    this.map = this.make.tilemap({ key: 'map' })
-    const tileset = this.map.addTilesetImage('RobotTileset', 'tiles')
-    this.BackgroundLayer = this.map.createStaticLayer('Background', tileset, 0, 0) // layer index, tileset, x, y
-    this.WorldLayer = this.map.createStaticLayer('World', tileset, 0, 0) // layer index, tileset, x, y
+    this.levelA = this.make.tilemap({ key: 'levelA' })
+    const tileset = this.levelA.addTilesetImage('RobotTileset', 'tiles')
+    this.BackgroundLayer = this.levelA.createStaticLayer('Background', tileset, 0, 0) // layer index, tileset, x, y
+    this.WorldLayer = this.levelA.createStaticLayer('World', tileset, 0, 0) // layer index, tileset, x, y
 
     // collision
     this.WorldLayer.setCollisionByProperty({ collides: true })
@@ -143,7 +147,7 @@ class LevelAScene extends Phaser.Scene {
     this.camera.zoom = 1.61803
 
     //  constraint camera
-    this.camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
+    this.camera.setBounds(0, 0, this.levelA.widthInPixels, this.levelA.heightInPixels)
   }
 
   gameOver () {

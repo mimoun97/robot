@@ -20,7 +20,7 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   create () {
-    this.cameras.main.backgroundColor.setTo('#fff')
+    this.cameras.main.setBackgroundColor('#021f28')
 
     // load and play bg music
     this.music = this.sound.add('GameOverMusic')

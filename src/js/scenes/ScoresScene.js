@@ -8,8 +8,15 @@ class ScoresScene extends Phaser.Scene {
       key: 'ScoresScene'
     })
   }
+  init (data) {
+    this.seekTime = data.SEEK // FIXME: resume music at same time
+  }
   create () {
-    console.debug('ScoresScene: init()')
+    // load and play bg music
+    this.music = this.sound.add('MenuMusic')
+    this.music.setSeek(this.seekTime)
+    this.music.setLoop(true)
+    this.music.play()
 
     this.cameras.main.setBackgroundColor('#021f28')
 
@@ -33,8 +40,10 @@ class ScoresScene extends Phaser.Scene {
     this.backButton.on('pointerout', () => { this.backButton.alpha = 1 })
     this.backButton.on('pointerdown',
       () => {
+        let seek = this.music.seek
         this.clickSound.play()
-        this.scene.stop().start('MenuScene')
+        this.music.stop()
+        this.scene.stop().start('MenuScene', { SEEK: seek })
       })
 
     this.alignElements()
@@ -58,11 +67,6 @@ class ScoresScene extends Phaser.Scene {
       this.backButton,
       this.add.zone(WIDTH / 2, HEIGHT / 2 + this.primer.displayHeight + 160, WIDTH, HEIGHT)
     )
-  }
-
-  startGame () {
-    this.scene.stop().start('LevelBScene')
-    // this.scene.start('LevelBScene')
   }
 }
 

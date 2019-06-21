@@ -11,6 +11,7 @@ class Player extends Phaser.GameObjects.Sprite {
     this.body.setBounce(0.5, 0.5)
     this.body.gravity.y = 200
     this.alive = true
+    this.lives = 3
     this.speed = 150
     this.jumpSpeed = 800
     this.cursors = this.scene.input.keyboard.createCursorKeys()
@@ -64,12 +65,7 @@ class Player extends Phaser.GameObjects.Sprite {
       repeat: -1
     })
 
-    // collision coins and enemies
-    this.scene.physics.overlap(this, this.scene.coins, this.pickup)
-    // this.scene.physics.collide(this, this.scene.enemies, this.hit)
-
-    // add player to scene
-    this.scene.add.existing(this)
+    this.scene.add.existing(this) // add player to scene
 
     this.anims.play('player_idle', true)
   }
@@ -114,7 +110,7 @@ class Player extends Phaser.GameObjects.Sprite {
   }
 
   hit (player, enemy) {
-    this.setTint(0xe20408)
+    player.setTint(0xe20408)
     this.damageSound.play()
     enemy.die()
     this.scene.time.addEvent({ delay: 1000, callback: this.normalize(), callbackScope: this })

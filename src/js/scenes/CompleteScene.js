@@ -11,7 +11,10 @@ export default class CompleteScene extends Phaser.Scene {
 
   init (data) {
     let coins = this.registry.get('coins_current')
-    this.registry.set('score', coins * this.coinValue)
+    let levelAScore = this.registry.get('score')
+    console.log('lvelA SCORE: ', levelAScore)
+    console.log('lvelA coins_current: ', coins)
+    this.registry.set('score', levelAScore + (coins * this.coinValue))
     this.score = this.registry.get('score')
 
     // set highscore in localstorage
@@ -20,8 +23,7 @@ export default class CompleteScene extends Phaser.Scene {
   }
 
   create () {
-    this.cameras.main.backgroundColor.setTo(76, 175, 80)
-    this.cameras.main.backgroundColor.setTo(2, 31, 40)
+    this.cameras.main.setBackgroundColor('#021f28')
 
     let overText = this.add.text(0, 0,
       'LEVEL COMPLETE!',

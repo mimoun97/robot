@@ -35,6 +35,7 @@ class Coin extends Phaser.GameObjects.Sprite {
 
   pickup () {
     this.sound.play()
+    this.body.setEnable(false)
     this.scene.tweens.add({
       targets: this,
       y: this.y - 100,
