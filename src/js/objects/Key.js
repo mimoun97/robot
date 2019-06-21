@@ -1,16 +1,16 @@
 import Phaser from 'phaser'
 
 class Key extends Phaser.GameObjects.Sprite {
-  constructor(config) {
+  constructor (config) {
     super(config.scene, config.x, config.y, 'key')
     config.scene.physics.world.enable(this)
     this.scene = config.scene
     this.body.setImmovable(true)
     this.body.allowGravity = false
 
-    //sound
+    // sound
     this.sound = this.scene.sound.add('key')
-    this.sound.setVolume(.4)
+    this.sound.setVolume(0.4)
 
     // floating animation
     this.tween = this.scene.tweens.add({
@@ -26,18 +26,18 @@ class Key extends Phaser.GameObjects.Sprite {
 
     // particles
     this.particles = this.scene.add.particles('random')
-    this.emitter = this.particles.createEmitter({on: false, duration: 1000})
+    this.emitter = this.particles.createEmitter({ on: false, duration: 1000 })
     this.emitter.setPosition(this.x, this.y)
     this.emitter.setSpeed(64)
     this.scene.add.existing(this) // required
   }
 
-  take(player, key) {
+  take (player, key) {
     this.emitter.explode(60, player.x, player.y) // particles
     this.sound.play()
     this.tween.stop()
     this.scene.nextLevel()
-    this.destroy()
+    this.scene.time.addEvent({ delay: 500, callback: this.destroy(), callbackScope: this })
   }
 }
 

@@ -34,26 +34,29 @@ class ScoresScene extends Phaser.Scene {
     this.backButton.on('pointerdown',
       () => {
         this.clickSound.play()
-        this.scene.start('MenuScene')
+        this.scene.stop().start('MenuScene')
       })
 
     this.alignElements()
   }
 
   alignElements () {
+    let HEIGHT = this.sys.game.config.height
+    let WIDTH = this.sys.game.config.width
+
     Phaser.Display.Align.In.Center(
       this.titleText,
-      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2 - this.titleText.displayHeight, this.sys.game.config.width, this.sys.game.config.height)
+      this.add.zone(WIDTH / 2, HEIGHT / 2 - this.titleText.displayHeight, WIDTH, HEIGHT)
     )
 
     Phaser.Display.Align.In.Center(
       this.primer,
-      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2, this.sys.game.config.width, this.sys.game.config.height)
+      this.add.zone(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT)
     )
 
     Phaser.Display.Align.In.Center(
       this.backButton,
-      this.add.zone(this.sys.game.config.width / 2, this.sys.game.config.height / 2 + this.primer.displayHeight + 160, this.sys.game.config.width, this.sys.game.config.height)
+      this.add.zone(WIDTH / 2, HEIGHT / 2 + this.primer.displayHeight + 160, WIDTH, HEIGHT)
     )
   }
 

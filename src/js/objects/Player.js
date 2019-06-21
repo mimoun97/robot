@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 
 class Player extends Phaser.GameObjects.Sprite {
-  constructor(config) {
+  constructor (config) {
     super(config.scene, config.x, config.y, 'player')
     config.scene.physics.world.enable(this)
     // this.body.setCollideWorldBounds(true) // FIXME: dont work well with tilemap
@@ -74,7 +74,7 @@ class Player extends Phaser.GameObjects.Sprite {
     this.anims.play('player_idle', true)
   }
 
-  update(time, delta) {
+  update (time, delta) {
     if (this.alive) {
       let livesCurrent = this.scene.registry.get('lives_current')
       if (livesCurrent <= 0) {
@@ -88,7 +88,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
-  playerMovement() {
+  playerMovement () {
     if (this.cursors.left.isDown) {
       this.body.setVelocityX(-this.speed)
       this.setFlipX(true)
@@ -111,24 +111,22 @@ class Player extends Phaser.GameObjects.Sprite {
       this.dust.explode(15, this.x, this.y + 16)
       this.exp.explode(5, this.x, this.y + 16)
     }
-
-
   }
 
-  hit(player, enemy) {
+  hit (player, enemy) {
+    this.setTint(0xe20408)
     this.damageSound.play()
     enemy.die()
-    this.setTint(0xe20408)
     this.scene.time.addEvent({ delay: 1000, callback: this.normalize(), callbackScope: this })
     let lives = this.scene.registry.get('lives_current')
     this.scene.registry.set('lives_current', lives - 1)
     this.scene.events.emit('livesChange')
   }
 
-  pickup(player, coin) {
+  pickup (player, coin) {
     coin.pickup()
   }
-  normalize() {
+  normalize () {
     if (this.alive) {
       this.setTint(0xffffff)
     }

@@ -18,13 +18,16 @@ class LevelAScene extends Phaser.Scene {
     this.events.emit('levelChange') // update ui level name
 
     this.createLevel()
-    this.createPlayer()
 
     this.coins = this.physics.add.group()
     this.coins.defaults.setAllowGravity = false // coins in the air
     this.enemies = this.add.group({ runChildUpdate: true }) // runChildUpdate -> foreach enemy.update()
 
     this.convertObjects()
+
+    // smooth follow
+    this.camera.startFollow(this.player, true, 0.05, 0.05)
+    this.camera.followOffset.set(0, 50)
 
     this.registry.set('coins_max', this.coins.getLength()) // count coins in level
     this.events.emit('coinChange') // update UI
@@ -36,7 +39,7 @@ class LevelAScene extends Phaser.Scene {
 
     this.physics.add.overlap(this.player, this.enemies, (player, enemy) => { player.hit(player, enemy) })
     this.physics.add.overlap(this.player, this.coins, (player, coin) => { coin.pickup() })
-    this.physics.add.overlap(this.player, this.key,(player, key) => { key.take(player, key) })
+    this.physics.add.overlap(this.player, this.key, (player, key) => { key.take(player, key) })
   }
 
   update (time, delta) {
@@ -104,22 +107,16 @@ class LevelAScene extends Phaser.Scene {
             y: object.y
           })
         }
+        // player
+        if (object.name === 'Spawn Point') {
+          // create a new instance of the player class at the currently loaded spawnpoint
+          this.player = new Player({
+            scene: this,
+            x: object.x,
+            y: object.y
+          })
+        }
       })
-  }
-
-  createPlayer () {
-    this.spawnPoint = this.map.findObject('Objects', obj => obj.name === 'Spawn Point')
-
-    // create a new instance of the player class at the currently loaded spawnpoint
-    this.player = new Player({
-      scene: this,
-      x: this.spawnPoint.x,
-      y: this.spawnPoint.y
-    })
-
-    // smooth follow
-    this.camera.startFollow(this.player, true, 0.05, 0.05)
-    this.camera.followOffset.set(0, 50)
   }
 
   createLevel () {

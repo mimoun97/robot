@@ -37,7 +37,7 @@ class MenuScene extends Phaser.Scene {
     this.authorText.on('pointerdown',
       () => {
         this.clickSound.play()
-        let win = window.open('https://github.com/mimoun1997', '_blank')
+        let win = window.open(Constants.AUTHOR_URL, '_blank')
         win.focus()
       })
 
@@ -60,7 +60,7 @@ class MenuScene extends Phaser.Scene {
     this.fullscreenButton.on('pointerdown', () => { this.fullscreen() })
 
     // music button
-    this.musicButton = this.add.image(0 + 100, 0 + 100, 'music').setInteractive()
+    this.musicButton = this.add.image(0, 0, 'music').setInteractive()
     this.musicButton.setScale(1.61803, 1.61803)
     this.musicButton.on('pointerover', () => { this.musicButton.alpha = 0.7 })
     this.musicButton.on('pointerout', () => { this.musicButton.alpha = 1 })
@@ -71,6 +71,13 @@ class MenuScene extends Phaser.Scene {
         this.sound.setMute(!isMute)
         this.musicButton.setFrame(isMute ? 0 : 1)
       })
+
+    // info button
+    this.infoButton = this.add.image(0, 0, 'info').setInteractive()
+    this.infoButton.setScale(1.61803, 1.61803)
+    this.infoButton.on('pointerover', () => { this.infoButton.alpha = 0.7 })
+    this.infoButton.on('pointerout', () => { this.infoButton.alpha = 1 })
+    this.infoButton.on('pointerdown', () => { this.startCredits() })
 
     this.alignElements()
   }
@@ -115,20 +122,21 @@ class MenuScene extends Phaser.Scene {
       this.musicButton,
       this.add.zone(WIDTH - 100, 100, WIDTH, HEIGHT)
     )
+
+    Phaser.Display.Align.In.Center(
+      this.infoButton,
+      this.add.zone(100, 100, WIDTH, HEIGHT)
+    )
   }
 
   fullscreen () {
     this.clickSound.play()
-    // TODO fullscreen 800x600?
-    // if (this.scale.isfullscreen) {
-    //   console.log('IS_fullscreen')
-    //   this.scale.stopfullscreen()
-    //   // On stop fulll screen
-    // } else {
-    //   console.log('START fullscreen')
-    //   this.scale.startfullscreen()
-    //   // On start fulll screen
-    // }
+    // FIXME: dont work well
+    if (this.scale.isFullscreen) {
+      this.scale.stopFullscreen()
+    } else {
+      this.scale.startFullscreen()
+    }
   }
 
   startGame () {
@@ -142,6 +150,12 @@ class MenuScene extends Phaser.Scene {
     this.clickSound.play()
     this.music.stop()
     this.scene.start('ScoresScene')
+  }
+
+  startCredits () {
+    this.clickSound.play()
+    this.music.stop()
+    this.scene.start('CreditsScene')
   }
 }
 

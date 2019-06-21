@@ -76,6 +76,7 @@ class PreloadScene extends Phaser.Scene {
     this.load.spritesheet('music', musicButtonsImg, { frameWidth: 48, frameHeight: 48 })
     this.load.image('heart', './img/ui/heart.png') // heart
     this.load.image('key', './img/key.png') // key
+    this.load.image('info', './img/ui/information.png') // key
 
     // TODO mobile controllers
     // if (Constants.IS_MOBILE) {
