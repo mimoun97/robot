@@ -19,7 +19,7 @@
 <div align="center">
     <p>
         <h2>Preview</h2>
-        <img src="public/assets/img/preview.png" alt="Game Preview" />
+        <img src="public/assets/img/preview.gif" alt="Game Preview" />
     </p>
 </div>
 
@@ -51,12 +51,21 @@ npm run serve
 + exemple en typescript https://github.com/jestarray/gate
 + phaser 3 bg music tut https://phasertutorials.com/creating-a-phaser-3-template-part-3/
 + music https://opengameart.org/content/arcade-quarter
++ sprite classes: https://rexrainbow.github.io/phaser3-rex-notes/docs/site/sprite/
++ audio notes: https://rexrainbow.github.io/phaser3-rex-notes/docs/site/audio/
++ tileset and inspiration level from: https://0x72.itch.io/16x16-robot-tileset
 
 ## TODO
 
-- [ ] background music889
-- [ ] animacions coins
-- [ ] sound coins, enemy, jump...
-- [ ] fullscreen
-- [ ] particles
+- [x] background music
+- [x] animacions coins
+- [x] sound coins, enemy, jump...
+- [x] fullscreen
+- [x] particles
+- [x] tiled
+- [x] Game Over
+- [x] Game Complete
+- [x] Lifes and scores (local high score)
+- [x] Control sound (mute on/off)
+- [ ] mobile inputs (joystick)
 - [ ] 2 levels
